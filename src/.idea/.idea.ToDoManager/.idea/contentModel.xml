@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\Владислав\.Rider2017.2\system\resharper-host\local\Transient\ReSharperHost\v10\SolutionCaches\_ToDoManager.-1984402680.00" t="ExcludeRecursive" />
+    <e p="C:\Work\TodoManager\src" t="IncludeFlat">
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="ToDoManager.Model" t="IncludeRecursive">
+        <e p="App.config" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Entities" t="Include">
+          <e p="BaseEntity.cs" t="Include" />
+          <e p="TaskEntity.cs" t="Include" />
+          <e p="TaskGroupEntity.cs" t="Include" />
+        </e>
+        <e p="Models" t="Include">
+          <e p="Interfaces" t="Include">
+            <e p="IBaseModelInterface.cs" t="Include" />
+            <e p="ITaskGroupModel.cs" t="Include" />
+            <e p="ITaskModel.cs" t="Include" />
+          </e>
+          <e p="TaskGroupModel.cs" t="Include" />
+          <e p="TaskModel.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive" />
+        <e p="packages.config" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="Repository" t="Include">
+          <e p="DbRepository.cs" t="Include" />
+          <e p="Interfaces" t="Include">
+            <e p="IDbRepository.cs" t="Include" />
+          </e>
+          <e p="ToDoManagerContext.cs" t="Include" />
+        </e>
+        <e p="ToDoManager.Model.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="ToDoManager.sln" t="IncludeFlat" />
+      <e p="ToDoManager.View" t="IncludeRecursive">
+        <e p="App.config" t="Include" />
+        <e p="App.xaml" t="Include" />
+        <e p="App.xaml.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Bootstrapper.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive" />
+        <e p="packages.config" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+          <e p="Resources.Designer.cs" t="Include" />
+          <e p="Resources.resx" t="Include" />
+          <e p="Settings.Designer.cs" t="Include" />
+          <e p="Settings.settings" t="Include" />
+        </e>
+        <e p="ToDoManager.View.csproj" t="IncludeRecursive" />
+        <e p="ViewModels" t="Include">
+          <e p="ShellViewModel.cs" t="Include" />
+        </e>
+        <e p="Views" t="Include" />
+      </e>
+    </e>
+  </component>
+</project>
