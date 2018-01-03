@@ -1,0 +1,11 @@
+C:\Work\TodoManager\src\ToDoManager.Model\bin\Debug\ToDoManager.Model.dll.config
+C:\Work\TodoManager\src\ToDoManager.Model\bin\Debug\ToDoManager.Model.dll
+C:\Work\TodoManager\src\ToDoManager.Model\bin\Debug\ToDoManager.Model.pdb
+C:\Work\TodoManager\src\ToDoManager.Model\bin\Debug\EntityFramework.dll
+C:\Work\TodoManager\src\ToDoManager.Model\bin\Debug\EntityFramework.SqlServer.dll
+C:\Work\TodoManager\src\ToDoManager.Model\bin\Debug\EntityFramework.xml
+C:\Work\TodoManager\src\ToDoManager.Model\bin\Debug\EntityFramework.SqlServer.xml
+C:\Work\TodoManager\src\ToDoManager.Model\obj\Debug\ToDoManager.Model.csprojResolveAssemblyReference.cache
+C:\Work\TodoManager\src\ToDoManager.Model\obj\Debug\ToDoManager.Model.csproj.CoreCompileInputs.cache
+C:\Work\TodoManager\src\ToDoManager.Model\obj\Debug\ToDoManager.Model.dll
+C:\Work\TodoManager\src\ToDoManager.Model\obj\Debug\ToDoManager.Model.pdb

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\Владислав\.Rider2017.2\system\resharper-host\local\Transient\ReSharperHost\v10\SolutionCaches\_ToDoManager.-1984402680.00" t="ExcludeRecursive" />
+    <e p="C:\Users\Владислав\.Rider2017.3\system\resharper-host\local\Transient\ReSharperHost\v11\SolutionCaches\_ToDoManager.-1984402680.00" t="ExcludeRecursive" />
     <e p="C:\Work\TodoManager\src" t="IncludeFlat">
       <e p="packages" t="ExcludeRecursive" />
       <e p="ToDoManager.Model" t="IncludeRecursive">
@@ -53,9 +53,21 @@
         </e>
         <e p="ToDoManager.View.csproj" t="IncludeRecursive" />
         <e p="ViewModels" t="Include">
+          <e p="EditGroupViewModel.cs" t="Include" />
+          <e p="EditTaskViewModel.cs" t="Include" />
           <e p="ShellViewModel.cs" t="Include" />
+          <e p="TaskGroupListViewModel.cs" t="Include" />
         </e>
-        <e p="Views" t="Include" />
+        <e p="Views" t="Include">
+          <e p="EditGroupView.xaml" t="Include" />
+          <e p="EditGroupView.xaml.cs" t="Include" />
+          <e p="EditTaskView.xaml" t="Include" />
+          <e p="EditTaskView.xaml.cs" t="Include" />
+          <e p="ShellView.xaml" t="Include" />
+          <e p="ShellView.xaml.cs" t="Include" />
+          <e p="TaskGroupListView.xaml" t="Include" />
+          <e p="TaskGroupListView.xaml.cs" t="Include" />
+        </e>
       </e>
     </e>
   </component>

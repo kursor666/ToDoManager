@@ -14,12 +14,11 @@ namespace ToDoManager.View
 {
     public class Bootstrapper : BootstrapperBase
     {
-        private readonly IKernel _kernel;
+        private IKernel _kernel;
 
         public Bootstrapper()
         {
             Initialize();
-            _kernel = new StandardKernel();
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)
@@ -29,12 +28,16 @@ namespace ToDoManager.View
 
         protected override void Configure()
         {
+            _kernel = new StandardKernel();
             _kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
             _kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
             _kernel.Bind<ToDoManagerContext>().ToSelf();
             _kernel.Bind<IDbRepository<TaskEntity>>().To<DbRepository<TaskEntity>>();
             _kernel.Bind<IDbRepository<TaskGroupEntity>>().To<DbRepository<TaskGroupEntity>>();
             _kernel.Bind<ITaskModel>().To<TaskModel>();
+            _kernel.Bind<ITaskGroupModel>().To<TaskGroupModel>();
+            _kernel.Bind<EditGroupViewModel>().ToSelf();
+            _kernel.Bind<EditTaskViewModel>().ToSelf();
         }
 
         protected override object GetInstance(Type service, string key)

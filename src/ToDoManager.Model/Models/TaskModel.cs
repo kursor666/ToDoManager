@@ -28,12 +28,13 @@ namespace ToDoManager.Model.Models
 
         public ObservableCollection<TaskEntity> GetAll()
         {
-            var tasks = _taskRepository.GetAll();
-            foreach (var taskEntity in tasks)
+            var tasks = _taskRepository.GetAll().Select(entity =>
             {
-                taskEntity.IsCompleted = taskEntity.CompletedUtc != null;
-            }
-            return tasks;
+                entity.IsCompleted = entity.CompletedUtc != null;
+                return entity;
+            });
+            
+            return new ObservableCollection<TaskEntity>(tasks);
         }
 
         public void EditTask(TaskEntity entity)
@@ -61,6 +62,5 @@ namespace ToDoManager.Model.Models
         {
             _groupModel.ExecuteTaskFromGroup(taskEntity);
         }
-        
     }
 }

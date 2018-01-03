@@ -72,7 +72,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ViewModels\EditGroupViewModel.cs" />
+    <Compile Include="ViewModels\EditTaskViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
+    <Compile Include="ViewModels\TaskGroupListViewModel.cs" />
+    <Compile Include="Views\EditGroupView.xaml.cs" />
+    <Compile Include="Views\EditTaskView.xaml.cs" />
+    <Compile Include="Views\ShellView.xaml.cs" />
+    <Compile Include="Views\TaskGroupListView.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
@@ -103,13 +110,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\ToDoManager.Model\ToDoManager.Model.csproj">
       <Project>{73109141-b261-42ae-b206-b4d8bff1d4cc}</Project>
       <Name>ToDoManager.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\EditGroupView.xaml" />
+    <Page Include="Views\EditTaskView.xaml" />
+    <Page Include="Views\ShellView.xaml" />
+    <Page Include="Views\TaskGroupListView.xaml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
