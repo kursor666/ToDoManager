@@ -29,7 +29,7 @@ namespace ToDoManager.Model.Repository
 
         public void Edit(TEntityBase entity) => _dbProvider.Entry(entity).State = EntityState.Modified;
 
-        public ObservableCollection<TEntityBase> GetAll() => _dbSet.Local;
+        public IEnumerable<TEntityBase> GetAll() => _dbSet.ToList();
 
         public TEntityBase GetById(Guid id) => _dbSet.Find(id);
 

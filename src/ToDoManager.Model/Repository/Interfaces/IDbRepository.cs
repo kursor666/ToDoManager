@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ToDoManager.Model.Entities;
 
@@ -11,7 +12,7 @@ namespace ToDoManager.Model.Repository.Interfaces
         void Add(TEntityBase entity);
         void Delete(TEntityBase entity);
         void Edit(TEntityBase entity);
-        ObservableCollection<TEntityBase> GetAll();
+        IEnumerable<TEntityBase> GetAll();
         TEntityBase GetById(Guid id);
 
         void SaveChanges();

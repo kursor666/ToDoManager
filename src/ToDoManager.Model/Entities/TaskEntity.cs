@@ -4,9 +4,7 @@ namespace ToDoManager.Model.Entities
 {
     public class TaskEntity : BaseEntity
     {
-        public virtual bool IsCompleted { get; set; }
-        
-        public virtual DateTime CreatedUtc { get; set; }
+        public virtual DateTime? CreatedUtc { get; set; }
 
         public virtual DateTime? CompletedUtc { get; set; }
         

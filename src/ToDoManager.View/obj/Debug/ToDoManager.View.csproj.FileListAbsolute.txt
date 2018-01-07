@@ -29,3 +29,12 @@ C:\Work\TodoManager\src\ToDoManager.View\obj\Debug\ToDoManager.View.csproj.Gener
 C:\Work\TodoManager\src\ToDoManager.View\obj\Debug\ToDoManager.View.csproj.CoreCompileInputs.cache
 C:\Work\TodoManager\src\ToDoManager.View\obj\Debug\ToDoManager.View.exe
 C:\Work\TodoManager\src\ToDoManager.View\obj\Debug\ToDoManager.View.pdb
+C:\Work\ToDoManager\src\ToDoManager.View\obj\Debug\Views\EditGroupView.g.cs
+C:\Work\ToDoManager\src\ToDoManager.View\obj\Debug\Views\EditTaskView.g.cs
+C:\Work\ToDoManager\src\ToDoManager.View\obj\Debug\Views\TaskGroupListView.g.cs
+C:\Work\ToDoManager\src\ToDoManager.View\obj\Debug\Views\EditGroupView.baml
+C:\Work\ToDoManager\src\ToDoManager.View\obj\Debug\Views\EditTaskView.baml
+C:\Work\ToDoManager\src\ToDoManager.View\obj\Debug\Views\TaskGroupListView.baml
+C:\Work\ToDoManager\src\ToDoManager.View\bin\Debug\EntityFramework.SqlServer.dll
+C:\Work\ToDoManager\src\ToDoManager.View\bin\Debug\EntityFramework.SqlServer.xml
+C:\Work\ToDoManager\src\ToDoManager.View\obj\Debug\ToDoManager.View_Content.g.cs

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using ToDoManager.Model.Entities;
@@ -10,12 +11,10 @@ namespace ToDoManager.Model.Models
     public class TaskGroupModel : ITaskGroupModel
     {
         private readonly IDbRepository<TaskGroupEntity> _groupRepository;
-        private readonly ITaskModel _taskModel;
 
-        public TaskGroupModel(IDbRepository<TaskGroupEntity> groupRepository, ITaskModel taskModel)
+        public TaskGroupModel(IDbRepository<TaskGroupEntity> groupRepository)
         {
             _groupRepository = groupRepository;
-            _taskModel = taskModel;
         }
 
         public void AddGroup(TaskGroupEntity groupEntity)
@@ -30,8 +29,12 @@ namespace ToDoManager.Model.Models
             _groupRepository.SaveChanges();
         }
 
-        public void JoinTaskInGroup(TaskEntity taskEntity, TaskGroupEntity groupEntity) =>
-            _taskModel.JoinTaskInGroup(taskEntity, groupEntity);
+        public void JoinTaskInGroup(TaskEntity taskEntity, TaskGroupEntity groupEntity)
+        {
+            groupEntity.Tasks.Add(taskEntity);
+            _groupRepository.Edit(groupEntity);
+            _groupRepository.SaveChanges();
+        }
 
         public void ExecuteTaskFromGroup(TaskEntity taskEntity)
         {
@@ -46,6 +49,12 @@ namespace ToDoManager.Model.Models
             new ObservableCollection<TaskEntity>(groupEntity.Tasks);
 
         public ObservableCollection<TaskGroupEntity> GetAll() => 
-            _groupRepository.GetAll();
+            new ObservableCollection<TaskGroupEntity>(_groupRepository.GetAll());
+
+        public ObservableCollection<TaskGroupEntity> GetBy(Func<TaskGroupEntity, bool> predicate)
+        {
+            var result = _groupRepository.GetAll().Where(predicate);
+            return new ObservableCollection<TaskGroupEntity>(result);
+        }
     }
 }

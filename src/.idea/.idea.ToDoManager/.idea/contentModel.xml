@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\Владислав\.Rider2017.3\system\resharper-host\local\Transient\ReSharperHost\v11\SolutionCaches\_ToDoManager.-1984402680.00" t="ExcludeRecursive" />
+    <e p="C:\Users\vlads\.Rider2017.3\system\resharper-host\local\Transient\ReSharperHost\v11\SolutionCaches\_ToDoManager.-1984402680.00" t="ExcludeRecursive" />
     <e p="C:\Work\TodoManager\src" t="IncludeFlat">
       <e p="packages" t="ExcludeRecursive" />
       <e p="ToDoManager.Model" t="IncludeRecursive">
@@ -42,6 +42,9 @@
         <e p="App.xaml.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="Bootstrapper.cs" t="Include" />
+        <e p="EventHandlers" t="Include">
+          <e p="EditEntityEvent.cs" t="Include" />
+        </e>
         <e p="obj" t="ExcludeRecursive" />
         <e p="packages.config" t="Include" />
         <e p="Properties" t="Include">

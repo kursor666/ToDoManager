@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using ToDoManager.Model.Entities;
 
 namespace ToDoManager.Model.Models.Interfaces
@@ -11,5 +12,7 @@ namespace ToDoManager.Model.Models.Interfaces
         void ExecuteTaskFromGroup(TaskEntity taskEntity);
         ObservableCollection<TaskEntity> GetUsersFromGroup(TaskGroupEntity groupEntity);
         ObservableCollection<TaskGroupEntity> GetAll();
+        ObservableCollection<TaskGroupEntity> GetBy(Func<TaskGroupEntity, bool> predicate);
+        
     }
 }

@@ -7,13 +7,19 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <ContentControl x:Name="TaskGroupVM" Grid.Column="0"/>
+        <Border BorderBrush="CadetBlue" CornerRadius="3" BorderThickness="2" Margin="3" Grid.Column="0">
+            <ContentControl x:Name="TaskGroupVM" />
+        </Border>
         <StackPanel Orientation="Vertical" Grid.Column="1">
-            <ContentControl x:Name="EditTaskVM"/>
-            <ContentControl x:Name="EditGroupVM"/>
+            <Border BorderBrush="CadetBlue" CornerRadius="3" BorderThickness="2" Margin="3">
+                <ContentControl x:Name="EditTaskVM" />
+            </Border>
+            <Border BorderBrush="CadetBlue" CornerRadius="3" BorderThickness="2" Margin="3">
+                <ContentControl x:Name="EditGroupVM" />
+            </Border>
         </StackPanel>
     </Grid>
 </UserControl>

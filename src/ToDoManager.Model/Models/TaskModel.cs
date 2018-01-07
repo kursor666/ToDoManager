@@ -37,6 +37,12 @@ namespace ToDoManager.Model.Models
             return new ObservableCollection<TaskEntity>(tasks);
         }
 
+        public ObservableCollection<TaskEntity> GetBy(Func<TaskEntity, bool> predicate)
+        {
+            var result = GetAll().Where(predicate);
+            return new ObservableCollection<TaskEntity>(result);
+        }
+
         public void EditTask(TaskEntity entity)
         {
             entity.CompletedUtc = entity.IsCompleted ? DateTime.UtcNow : (DateTime?) null;
