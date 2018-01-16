@@ -2,7 +2,7 @@
 
 namespace ToDoManager.Model.Entities
 {
-    public class BaseEntity
+    public class BaseEntity 
     {
         public virtual Guid Id { get; set; }
         

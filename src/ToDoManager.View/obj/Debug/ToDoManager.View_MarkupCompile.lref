@@ -2,5 +2,6 @@
 FC:\Work\ToDoManager\src\ToDoManager.View\App.xaml;;
 FC:\Work\ToDoManager\src\ToDoManager.View\Views\EditGroupView.xaml;;
 FC:\Work\ToDoManager\src\ToDoManager.View\Views\EditTaskView.xaml;;
-FC:\Work\ToDoManager\src\ToDoManager.View\Views\TaskGroupListView.xaml;;
+FC:\Work\ToDoManager\src\ToDoManager.View\Views\ListGroupView.xaml;;
+FC:\Work\ToDoManager\src\ToDoManager.View\Views\ListTaskView.xaml;;
 

@@ -13,5 +13,6 @@ namespace ToDoManager.Model.Entities
         public virtual Guid? GroupId { get; set; }
         
         public virtual TaskGroupEntity Group { get; set; }
+
     }
 }

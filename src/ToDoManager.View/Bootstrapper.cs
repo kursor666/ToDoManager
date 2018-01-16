@@ -8,6 +8,7 @@ using ToDoManager.Model.Models;
 using ToDoManager.Model.Models.Interfaces;
 using ToDoManager.Model.Repository;
 using ToDoManager.Model.Repository.Interfaces;
+using ToDoManager.View.Utils;
 using ToDoManager.View.ViewModels;
 
 namespace ToDoManager.View
@@ -31,13 +32,14 @@ namespace ToDoManager.View
             _kernel = new StandardKernel();
             _kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
             _kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
-            _kernel.Bind<ToDoManagerContext>().ToSelf();
+            _kernel.Bind<ToDoManagerContext>().ToSelf().InSingletonScope();
             _kernel.Bind<IDbRepository<TaskEntity>>().To<DbRepository<TaskEntity>>();
             _kernel.Bind<IDbRepository<TaskGroupEntity>>().To<DbRepository<TaskGroupEntity>>();
             _kernel.Bind<ITaskModel>().To<TaskModel>();
             _kernel.Bind<ITaskGroupModel>().To<TaskGroupModel>();
             _kernel.Bind<EditGroupViewModel>().ToSelf();
             _kernel.Bind<EditTaskViewModel>().ToSelf();
+            _kernel.Bind<EntityToVmConverter>().ToSelf();
         }
 
         protected override object GetInstance(Type service, string key)

@@ -5,23 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:models="clr-namespace:ToDoManager.Model.Entities;assembly=ToDoManager.Model"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <DataTemplate x:Key="TaskTemplate" DataType="{x:Type models:TaskEntity}">
-            <Grid Margin="3" cal:Bind.ModelWithoutContext="{Binding}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="5*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Name="Name" FontSize="13" Grid.Column="0" />
-                <Image Name="IsCompleted" Grid.Column="1" HorizontalAlignment="Right" />
-            </Grid>
-        </DataTemplate>
-
         <Style TargetType="ListBoxItem" x:Key="TaskItemStyle">
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        </Style>        
+        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -41,23 +31,11 @@
             </Grid.ColumnDefinitions>
             <RadioButton Name="UncompletedOnly" Content="Активные" GroupName="TaskComplete" Grid.Column="0" Margin="2" />
             <RadioButton Name="CompletedOnly" Content="Выполненые" GroupName="TaskComplete" Grid.Column="1" Margin="2" />
-            <RadioButton Name="AllTasks" Content="Все" GroupName="TaskComplete" Grid.Column="2" Margin="2" />
+            <RadioButton Name="AllTasks" IsChecked="True" Content="Все" GroupName="TaskComplete" Grid.Column="2"
+                         Margin="2" />
         </Grid>
-        <ListBox x:Name="Groups" Grid.Column="0" Grid.Row="1" ItemContainerStyle="{ StaticResource TaskItemStyle}">
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type models:TaskGroupEntity}">
-                    <DockPanel cal:Bind.ModelWithoutContext="{Binding}">
-                        <Expander>
-                            <Expander.Header>
-                                <TextBlock x:Name="Name" FontSize="13" />
-                            </Expander.Header>
-                            <ListBox ItemsSource="{Binding Tasks}" ItemTemplate="{StaticResource TaskTemplate}"
-                                     ItemContainerStyle="{ StaticResource TaskItemStyle}" />
-                        </Expander>
-                    </DockPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <ListBox x:Name="Groups" Grid.Column="0" Grid.Row="1" ItemTemplate="{StaticResource GroupTemplate}" 
+                 ItemContainerStyle="{ StaticResource TaskItemStyle}"/>
         <ListBox x:Name="Tasks" ItemTemplate="{StaticResource TaskTemplate}"
                  ItemContainerStyle="{ StaticResource TaskItemStyle}" Grid.Column="1" Grid.Row="1" />
     </Grid>

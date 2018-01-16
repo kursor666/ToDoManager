@@ -44,6 +44,8 @@
         <e p="Bootstrapper.cs" t="Include" />
         <e p="EventHandlers" t="Include">
           <e p="EditEntityEvent.cs" t="Include" />
+          <e p="ReloadEvent.cs" t="Include" />
+          <e p="SelectedGroupEvent.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive" />
         <e p="packages.config" t="Include" />
@@ -55,9 +57,14 @@
           <e p="Settings.settings" t="Include" />
         </e>
         <e p="ToDoManager.View.csproj" t="IncludeRecursive" />
+        <e p="Utils" t="Include">
+          <e p="EntityToVmConverter.cs" t="Include" />
+        </e>
         <e p="ViewModels" t="Include">
           <e p="EditGroupViewModel.cs" t="Include" />
           <e p="EditTaskViewModel.cs" t="Include" />
+          <e p="ListGroupViewModel.cs" t="Include" />
+          <e p="ListTaskViewModel.cs" t="Include" />
           <e p="ShellViewModel.cs" t="Include" />
           <e p="TaskGroupListViewModel.cs" t="Include" />
         </e>
@@ -66,6 +73,10 @@
           <e p="EditGroupView.xaml.cs" t="Include" />
           <e p="EditTaskView.xaml" t="Include" />
           <e p="EditTaskView.xaml.cs" t="Include" />
+          <e p="ListGroupView.xaml" t="Include" />
+          <e p="ListGroupView.xaml.cs" t="Include" />
+          <e p="ListTaskView.xaml" t="Include" />
+          <e p="ListTaskView.xaml.cs" t="Include" />
           <e p="ShellView.xaml" t="Include" />
           <e p="ShellView.xaml.cs" t="Include" />
           <e p="TaskGroupListView.xaml" t="Include" />

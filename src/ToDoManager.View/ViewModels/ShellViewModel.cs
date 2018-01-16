@@ -13,16 +13,37 @@ namespace ToDoManager.View.ViewModels
             EditGroupVM = editGroupVm;
             EditTaskVM = editTaskVm;
             TaskGroupVM = taskGroupVm;
-            new TaskModel(new DbRepository<TaskEntity>(new ToDoManagerContext()),
-                new TaskGroupModel(new DbRepository<TaskGroupEntity>(new ToDoManagerContext()))).AddTask(new TaskEntity
-            {
-                Name = "radioButtonsradioButtonsradioButtons",
-                Note = "Исправить радиобаттоны",
-                Group = new TaskGroupEntity
-                {
-                    Name = "gr"
-                }
-            });
+//            var group1 = new TaskGroupEntity
+//            {
+//                Name = "group1"
+//            };
+//            var group2 = new TaskGroupEntity
+//            {
+//                Name = "group2"
+//            };
+//            var taskM =
+//                new TaskModel(new DbRepository<TaskEntity>(new ToDoManagerContext()),
+//                    new TaskGroupModel(new DbRepository<TaskGroupEntity>(new ToDoManagerContext())));
+//
+//            for (int i = 0; i < 5; i++)
+//            {
+//                taskM.AddTask(new TaskEntity
+//                {
+//                    Name = $"task{i}",
+//                    Note = $"note{i}",
+//                    Group = group1
+//                });
+//            }
+//            for (int i = 5; i < 10; i++)
+//            {
+//                taskM.AddTask(new TaskEntity
+//                {
+//                    Name = $"task{i}",
+//                    Note = $"note{i}",
+//                    Group = group2
+//                });
+//            }
+//            taskM.SaveChanges();
         }
 
         public TaskGroupListViewModel TaskGroupVM { get; set; }

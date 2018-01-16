@@ -4,9 +4,69 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ToDoManager.View.Views"
+             xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        
+    <Grid HorizontalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Text="Имя группы" Grid.Column="0" Grid.Row="0" />
+            <TextBox x:Name="Name" Grid.Column="1" Grid.Row="0" HorizontalContentAlignment="Stretch" Margin="2" />
+
+            <TextBlock Text="Выполнено" Grid.Column="0" Grid.Row="1" />
+            <CheckBox x:Name="IsCompleted" Grid.Column="1" Grid.Row="1" Margin="2" />
+
+            <Expander Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
+                <Expander.Header>
+                    <TextBlock Text="Задачи" />
+                </Expander.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <ListBox x:Name="Tasks" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Margin="1">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock x:Name="Name" cal:Bind.ModelWithoutContext="{Binding}"
+                                           HorizontalAlignment="Left" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Button Content="Исключить" Margin="1" Grid.Column="1" Grid.Row="0"
+                            cal:Message.Attach="[Event Click] = [Action RemoveTaskFromGroup(Tasks.SelectedItem)]" />
+                </Grid>
+                
+            </Expander>
+
+
+        </Grid>
+        <StackPanel Grid.Column="1">
+            <Button x:Name="CreateNew" Content="Создать" Margin="2" />
+            <Button x:Name="Save" Content="Сохранить" Margin="2" />
+            <Button x:Name="Cancel" Content="Отменить" Margin="2" />
+            <Button x:Name="Remove" Content="Удалить" Margin="2" />
+        </StackPanel>
     </Grid>
+
 </UserControl>

@@ -20,19 +20,26 @@ namespace ToDoManager.Model.Models
         public void AddGroup(TaskGroupEntity groupEntity)
         {
             _groupRepository.Add(groupEntity);
-            _groupRepository.SaveChanges();
         }
 
         public void RemoveGroup(TaskGroupEntity groupEntity)
         {
             _groupRepository.Delete(groupEntity);
-            _groupRepository.SaveChanges();
+        }
+
+        public void EditGroup(TaskGroupEntity groupEntity)
+        {
+            _groupRepository.Edit(groupEntity);
         }
 
         public void JoinTaskInGroup(TaskEntity taskEntity, TaskGroupEntity groupEntity)
         {
             groupEntity.Tasks.Add(taskEntity);
             _groupRepository.Edit(groupEntity);
+        }
+
+        public void SaveChanges()
+        {
             _groupRepository.SaveChanges();
         }
 
@@ -42,13 +49,17 @@ namespace ToDoManager.Model.Models
             taskEntity.Group.Tasks.Remove(taskEntity);
             if (!taskEntity.Group.Tasks.Any())
                 RemoveGroup(taskEntity.Group);
-            _groupRepository.SaveChanges();
         }
 
-        public ObservableCollection<TaskEntity> GetUsersFromGroup(TaskGroupEntity groupEntity) =>
-            new ObservableCollection<TaskEntity>(groupEntity.Tasks);
+        public TaskGroupEntity GetById(Guid id) => _groupRepository.GetById(id);
 
-        public ObservableCollection<TaskGroupEntity> GetAll() => 
+        public ObservableCollection<TaskEntity> GetTasksFromGroup(TaskGroupEntity groupEntity)
+        {
+            var group = _groupRepository.GetById(groupEntity.Id);
+            return new ObservableCollection<TaskEntity>(group.Tasks);
+        }
+
+        public ObservableCollection<TaskGroupEntity> GetAll() =>
             new ObservableCollection<TaskGroupEntity>(_groupRepository.GetAll());
 
         public ObservableCollection<TaskGroupEntity> GetBy(Func<TaskGroupEntity, bool> predicate)

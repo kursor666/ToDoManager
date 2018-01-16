@@ -9,6 +9,7 @@ namespace ToDoManager.Model.Models.Interfaces
         void AddTask(TaskEntity entity);
         ObservableCollection<TaskEntity> GetAll();
         ObservableCollection<TaskEntity> GetBy(Func<TaskEntity, bool> predicate);
+        TaskEntity GetById(Guid id);
         void EditTask(TaskEntity entity);
 
         void ExecuteTaskFromGroup(TaskEntity taskEntity);

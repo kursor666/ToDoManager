@@ -23,7 +23,6 @@ namespace ToDoManager.Model.Models
             entity.IsCompleted = false;
             entity.CreatedUtc = DateTime.UtcNow;
             _taskRepository.Add(entity);
-            _taskRepository.SaveChanges();
         }
 
         public ObservableCollection<TaskEntity> GetAll()
@@ -43,24 +42,28 @@ namespace ToDoManager.Model.Models
             return new ObservableCollection<TaskEntity>(result);
         }
 
+        public TaskEntity GetById(Guid id) => _taskRepository.GetById(id);
+
         public void EditTask(TaskEntity entity)
         {
             entity.CompletedUtc = entity.IsCompleted ? DateTime.UtcNow : (DateTime?) null;
             _taskRepository.Edit(entity);
-            _taskRepository.SaveChanges();
         }
 
         public void RemoveTask(TaskEntity entity)
         {
             ExecuteTaskFromGroup(entity);
             _taskRepository.Delete(entity);
-            _taskRepository.SaveChanges();
         }
 
         public void JoinTaskInGroup(TaskEntity taskEntity, TaskGroupEntity groupEntity)
         {
             taskEntity.Group = groupEntity;
             _taskRepository.Edit(taskEntity);
+        }
+
+        public void SaveChanges()
+        {
             _taskRepository.SaveChanges();
         }
 
