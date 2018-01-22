@@ -21,19 +21,12 @@ namespace ToDoManager.View.Utils
             _eventAggregator = eventAggregator;
         }
 
-        public ObservableCollection<ListGroupViewModel> ToListViewModel(
-            IEnumerable<TaskGroupEntity> groupEntities)
-        {
-            var vmGroups = groupEntities.Select(entity =>
-                new ListGroupViewModel(entity, _groupModel, this, _eventAggregator));
-            return new ObservableCollection<ListGroupViewModel>(vmGroups);
-        }
+        public IEnumerable<ListGroupViewModel> ToListViewModel(
+            IEnumerable<TaskGroupEntity> groupEntities) => groupEntities.Select(entity =>
+            new ListGroupViewModel(entity, _groupModel, this, _eventAggregator));
 
-        public ObservableCollection<ListTaskViewModel> ToListViewModel(
-            IEnumerable<TaskEntity> taskEntities)
-        {
-            var vmTasks = taskEntities.Select(entity => new ListTaskViewModel(entity, _taskModel, _eventAggregator));
-            return new ObservableCollection<ListTaskViewModel>(vmTasks);
-        }
+        public IEnumerable<ListTaskViewModel> ToListViewModel(
+            IEnumerable<TaskEntity> taskEntities) =>
+            taskEntities.Select(entity => new ListTaskViewModel(entity, _taskModel, _eventAggregator));
     }
 }

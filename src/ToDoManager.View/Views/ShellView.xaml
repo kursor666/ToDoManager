@@ -4,23 +4,30 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             Height="400" Width="650">
+             d:DesignHeight="400" d:DesignWidth="650"
+             Background="{Binding BackgroundColor}">
     <Grid>
-        <
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Border BorderBrush="CadetBlue" CornerRadius="3" BorderThickness="2" Margin="3" Grid.Column="0">
-            <ContentControl x:Name="TaskGroupVM" />
-        </Border>
-        <StackPanel Orientation="Vertical" Grid.Column="1">
-            <Border BorderBrush="CadetBlue" CornerRadius="3" BorderThickness="2" Margin="3">
-                <ContentControl x:Name="EditTaskVM" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ContentControl x:Name="MenuVm" Grid.Row="0"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border BorderBrush="CadetBlue" CornerRadius="3" BorderThickness="2" Margin="3" Grid.Column="0">
+                <ContentControl x:Name="TaskGroupVm" />
             </Border>
-            <Border BorderBrush="CadetBlue" CornerRadius="3" BorderThickness="2" Margin="3">
-                <ContentControl x:Name="EditGroupVM" />
-            </Border>
-        </StackPanel>
+            <StackPanel Orientation="Vertical" Grid.Column="1">
+                <Border BorderBrush="CadetBlue" CornerRadius="3" BorderThickness="2" Margin="3">
+                    <ContentControl x:Name="EditTaskVm" />
+                </Border>
+                <Border BorderBrush="CadetBlue" CornerRadius="3" BorderThickness="2" Margin="3">
+                    <ContentControl x:Name="EditGroupVm" />
+                </Border>
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

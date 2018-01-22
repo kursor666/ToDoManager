@@ -16,6 +16,7 @@ namespace ToDoManager.Model.Repository.Interfaces
         TEntityBase GetById(Guid id);
 
         void SaveChanges();
+        void DiscardAllChanges();
         void DiscardChanges(TEntityBase entity);
     }
 }

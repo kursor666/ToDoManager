@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,8 +30,8 @@ namespace ToDoManager.View.ViewModels
             eventAggregator.Subscribe(this);
         }
 
-        public ObservableCollection<ListTaskViewModel> Tasks =>
-            _entityToVmConverter.ToListViewModel(_groupModel.GetTasksFromGroup(GroupEntity));
+        public List<ListTaskViewModel> Tasks =>
+            _entityToVmConverter.ToListViewModel(_groupModel.GetTasksFromGroup(GroupEntity)).ToList();
 
         public ListTaskViewModel SelectedTask
         {
@@ -42,9 +43,7 @@ namespace ToDoManager.View.ViewModels
                 _selectedTask = value;
                 if (_selectedTask != null)
                 {
-                    var task = _groupModel.GetTasksFromGroup(GroupEntity)
-                        .FirstOrDefault(entity => entity.Id == value.TaskEntity.Id);
-                    _eventAggregator.Publish(new EditEntityEvent<TaskEntity>(task),
+                    _eventAggregator.Publish(new EditEntityEvent<TaskEntity>(value.TaskEntity),
                         action => { Task.Factory.StartNew(action); });
                 }
 

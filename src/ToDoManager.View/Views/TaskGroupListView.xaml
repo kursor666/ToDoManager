@@ -34,9 +34,10 @@
             <RadioButton Name="AllTasks" IsChecked="True" Content="Все" GroupName="TaskComplete" Grid.Column="2"
                          Margin="2" />
         </Grid>
-        <ListBox x:Name="Groups" Grid.Column="0" Grid.Row="1" ItemTemplate="{StaticResource GroupTemplate}" 
-                 ItemContainerStyle="{ StaticResource TaskItemStyle}"/>
+        <ListBox x:Name="Groups" Grid.Column="0" Grid.Row="1" ItemTemplate="{StaticResource GroupTemplate}"
+                 ItemContainerStyle="{ StaticResource TaskItemStyle}" Background="{Binding BackgroundColor}" />
         <ListBox x:Name="Tasks" ItemTemplate="{StaticResource TaskTemplate}"
-                 ItemContainerStyle="{ StaticResource TaskItemStyle}" Grid.Column="1" Grid.Row="1" />
+                 ItemContainerStyle="{ StaticResource TaskItemStyle}" Grid.Column="1" Grid.Row="1"
+                 Background="{Binding BackgroundColor}" />
     </Grid>
 </UserControl>

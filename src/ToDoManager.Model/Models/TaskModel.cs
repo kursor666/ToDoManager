@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
@@ -7,15 +8,19 @@ using ToDoManager.Model.Repository.Interfaces;
 
 namespace ToDoManager.Model.Models
 {
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     public class TaskModel : ITaskModel
     {
         private readonly IDbRepository<TaskEntity> _taskRepository;
         private readonly ITaskGroupModel _groupModel;
+        private readonly SettingsModel _settingsModel;
 
-        public TaskModel(IDbRepository<TaskEntity> taskRepository, ITaskGroupModel groupModel)
+        public TaskModel(IDbRepository<TaskEntity> taskRepository, ITaskGroupModel groupModel,
+            SettingsModel settingsModel)
         {
             _taskRepository = taskRepository;
             _groupModel = groupModel;
+            _settingsModel = settingsModel;
         }
 
         public void AddTask(TaskEntity entity)
@@ -23,24 +28,20 @@ namespace ToDoManager.Model.Models
             entity.IsCompleted = false;
             entity.CreatedUtc = DateTime.UtcNow;
             _taskRepository.Add(entity);
+            TrySaveChanges();
         }
 
-        public ObservableCollection<TaskEntity> GetAll()
+        public IEnumerable<TaskEntity> GetAll()
         {
             var tasks = _taskRepository.GetAll().Select(entity =>
             {
                 entity.IsCompleted = entity.CompletedUtc != null;
                 return entity;
             });
-            
-            return new ObservableCollection<TaskEntity>(tasks);
+            return tasks;
         }
 
-        public ObservableCollection<TaskEntity> GetBy(Func<TaskEntity, bool> predicate)
-        {
-            var result = GetAll().Where(predicate);
-            return new ObservableCollection<TaskEntity>(result);
-        }
+        public IEnumerable<TaskEntity> GetBy(Func<TaskEntity, bool> predicate) => GetAll().Where(predicate);
 
         public TaskEntity GetById(Guid id) => _taskRepository.GetById(id);
 
@@ -48,28 +49,35 @@ namespace ToDoManager.Model.Models
         {
             entity.CompletedUtc = entity.IsCompleted ? DateTime.UtcNow : (DateTime?) null;
             _taskRepository.Edit(entity);
+            TrySaveChanges();
         }
 
         public void RemoveTask(TaskEntity entity)
         {
             ExecuteTaskFromGroup(entity);
             _taskRepository.Delete(entity);
+            TrySaveChanges();
         }
+
+        public void DiscardChanges(TaskEntity entity) => _taskRepository.DiscardChanges(entity);
 
         public void JoinTaskInGroup(TaskEntity taskEntity, TaskGroupEntity groupEntity)
         {
-            taskEntity.Group = groupEntity;
+            taskEntity.Group = groupEntity; // вот тут надо проверить говно с id шниками
             _taskRepository.Edit(taskEntity);
+            TrySaveChanges();
         }
 
-        public void SaveChanges()
+        private void TrySaveChanges()
         {
-            _taskRepository.SaveChanges();
+            if (_settingsModel.AutoSaveEnabled)
+                SaveChanges();
         }
 
-        public void ExecuteTaskFromGroup(TaskEntity taskEntity)
-        {
-            _groupModel.ExecuteTaskFromGroup(taskEntity);
-        }
+        public void SaveChanges() => _taskRepository.SaveChanges();
+
+        public void DiscardAllChanges() => _taskRepository.DiscardAllChanges();
+
+        public void ExecuteTaskFromGroup(TaskEntity taskEntity) => _groupModel.ExecuteTaskFromGroup(taskEntity);
     }
 }

@@ -36,7 +36,12 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
+    <Reference Include="System.Collections" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -48,8 +53,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\BaseEntity.cs" />
+    <Compile Include="Entities\SettingsEntity.cs" />
     <Compile Include="Entities\TaskEntity.cs" />
     <Compile Include="Entities\TaskGroupEntity.cs" />
+    <Compile Include="Models\SettingsModel.cs" />
     <Compile Include="Models\Interfaces\IBaseModelInterface.cs" />
     <Compile Include="Models\Interfaces\ITaskGroupModel.cs" />
     <Compile Include="Models\Interfaces\ITaskModel.cs" />
@@ -58,6 +65,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\DbRepository.cs" />
     <Compile Include="Repository\Interfaces\IDbRepository.cs" />
+    <Compile Include="Repository\Interfaces\ISettingsRepository.cs" />
+    <Compile Include="Repository\SettingsRepository.cs" />
     <Compile Include="Repository\ToDoManagerContext.cs" />
   </ItemGroup>
   <ItemGroup>

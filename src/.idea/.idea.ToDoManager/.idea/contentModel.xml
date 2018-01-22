@@ -9,6 +9,7 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="Entities" t="Include">
           <e p="BaseEntity.cs" t="Include" />
+          <e p="SettingsEntity.cs" t="Include" />
           <e p="TaskEntity.cs" t="Include" />
           <e p="TaskGroupEntity.cs" t="Include" />
         </e>
@@ -18,6 +19,7 @@
             <e p="ITaskGroupModel.cs" t="Include" />
             <e p="ITaskModel.cs" t="Include" />
           </e>
+          <e p="SettingsModel.cs" t="Include" />
           <e p="TaskGroupModel.cs" t="Include" />
           <e p="TaskModel.cs" t="Include" />
         </e>
@@ -30,7 +32,9 @@
           <e p="DbRepository.cs" t="Include" />
           <e p="Interfaces" t="Include">
             <e p="IDbRepository.cs" t="Include" />
+            <e p="ISettingsRepository.cs" t="Include" />
           </e>
+          <e p="SettingsRepository.cs" t="Include" />
           <e p="ToDoManagerContext.cs" t="Include" />
         </e>
         <e p="ToDoManager.Model.csproj" t="IncludeRecursive" />
@@ -45,6 +49,7 @@
         <e p="EventHandlers" t="Include">
           <e p="EditEntityEvent.cs" t="Include" />
           <e p="ReloadEvent.cs" t="Include" />
+          <e p="SelectedBackgroungColorEvent.cs" t="Include" />
           <e p="SelectedGroupEvent.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive" />
@@ -65,6 +70,7 @@
           <e p="EditTaskViewModel.cs" t="Include" />
           <e p="ListGroupViewModel.cs" t="Include" />
           <e p="ListTaskViewModel.cs" t="Include" />
+          <e p="MenuViewModel.cs" t="Include" />
           <e p="ShellViewModel.cs" t="Include" />
           <e p="TaskGroupListViewModel.cs" t="Include" />
         </e>
@@ -77,6 +83,8 @@
           <e p="ListGroupView.xaml.cs" t="Include" />
           <e p="ListTaskView.xaml" t="Include" />
           <e p="ListTaskView.xaml.cs" t="Include" />
+          <e p="MenuView.xaml" t="Include" />
+          <e p="MenuView.xaml.cs" t="Include" />
           <e p="ShellView.xaml" t="Include" />
           <e p="ShellView.xaml.cs" t="Include" />
           <e p="TaskGroupListView.xaml" t="Include" />

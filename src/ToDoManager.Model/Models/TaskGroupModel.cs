@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using ToDoManager.Model.Entities;
@@ -8,39 +10,52 @@ using ToDoManager.Model.Repository.Interfaces;
 
 namespace ToDoManager.Model.Models
 {
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     public class TaskGroupModel : ITaskGroupModel
     {
         private readonly IDbRepository<TaskGroupEntity> _groupRepository;
+        private readonly SettingsModel _settingsModel;
 
-        public TaskGroupModel(IDbRepository<TaskGroupEntity> groupRepository)
+        public TaskGroupModel(IDbRepository<TaskGroupEntity> groupRepository, SettingsModel settingsModel)
         {
             _groupRepository = groupRepository;
+            _settingsModel = settingsModel;
         }
 
-        public void AddGroup(TaskGroupEntity groupEntity)
+        public void AddGroup(TaskGroupEntity groupEntity) => _groupRepository.Add(groupEntity);
+
+        public void RemoveGroup(TaskGroupEntity groupEntity) => _groupRepository.Delete(groupEntity);
+
+        public void EditGroup(TaskGroupEntity groupEntity) => _groupRepository.Edit(groupEntity);
+
+        public void SaveChanges() => _groupRepository.SaveChanges();
+
+        public void DiscardAllChanges() => _groupRepository.DiscardAllChanges();
+
+        public void DiscardChanges(TaskGroupEntity entity) => _groupRepository.DiscardChanges(entity);
+
+        public TaskGroupEntity GetById(Guid id) => _groupRepository.GetById(id);
+
+        public IEnumerable<TaskEntity> GetTasksFromGroup(TaskGroupEntity groupEntity)
         {
-            _groupRepository.Add(groupEntity);
+            var group = _groupRepository.GetById(groupEntity.Id);
+            return group.Tasks;
         }
 
-        public void RemoveGroup(TaskGroupEntity groupEntity)
-        {
-            _groupRepository.Delete(groupEntity);
-        }
+        public IEnumerable<TaskGroupEntity> GetAll() =>
+            _groupRepository.GetAll();
 
-        public void EditGroup(TaskGroupEntity groupEntity)
+        public IEnumerable<TaskGroupEntity> GetBy(Func<TaskGroupEntity, bool> predicate)
         {
-            _groupRepository.Edit(groupEntity);
+            var result = _groupRepository.GetAll().Where(predicate);
+            return result;
         }
 
         public void JoinTaskInGroup(TaskEntity taskEntity, TaskGroupEntity groupEntity)
         {
             groupEntity.Tasks.Add(taskEntity);
             _groupRepository.Edit(groupEntity);
-        }
-
-        public void SaveChanges()
-        {
-            _groupRepository.SaveChanges();
+            TrySaveChanges();
         }
 
         public void ExecuteTaskFromGroup(TaskEntity taskEntity)
@@ -49,23 +64,13 @@ namespace ToDoManager.Model.Models
             taskEntity.Group.Tasks.Remove(taskEntity);
             if (!taskEntity.Group.Tasks.Any())
                 RemoveGroup(taskEntity.Group);
+            TrySaveChanges();
         }
 
-        public TaskGroupEntity GetById(Guid id) => _groupRepository.GetById(id);
-
-        public ObservableCollection<TaskEntity> GetTasksFromGroup(TaskGroupEntity groupEntity)
+        private void TrySaveChanges()
         {
-            var group = _groupRepository.GetById(groupEntity.Id);
-            return new ObservableCollection<TaskEntity>(group.Tasks);
-        }
-
-        public ObservableCollection<TaskGroupEntity> GetAll() =>
-            new ObservableCollection<TaskGroupEntity>(_groupRepository.GetAll());
-
-        public ObservableCollection<TaskGroupEntity> GetBy(Func<TaskGroupEntity, bool> predicate)
-        {
-            var result = _groupRepository.GetAll().Where(predicate);
-            return new ObservableCollection<TaskGroupEntity>(result);
+            if (_settingsModel.AutoSaveEnabled)
+                SaveChanges();
         }
     }
 }

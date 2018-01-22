@@ -30,7 +30,6 @@ namespace ToDoManager.View.ViewModels
                 if (value.Equals(TaskEntity.IsCompleted)) return;
                 TaskEntity.IsCompleted = value;
                 _taskModel.EditTask(TaskEntity);
-                _taskModel.SaveChanges();
                 _eventAggregator.Publish(new ReloadEvent(), action => { Task.Factory.StartNew(action); });
             }
         }

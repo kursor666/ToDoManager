@@ -1,18 +1,28 @@
-﻿using Caliburn.Micro;
-using ToDoManager.Model.Entities;
-using ToDoManager.Model.Models;
-using ToDoManager.Model.Repository;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows.Media;
+using Caliburn.Micro;
+using ToDoManager.View.EventHandlers;
 
 namespace ToDoManager.View.ViewModels
 {
-    public class ShellViewModel : PropertyChangedBase
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+    [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global")]
+    public class ShellViewModel : PropertyChangedBase, IHandle<SelectedBackgroungColorEvent>
     {
+        private readonly IEventAggregator _eventAggregator;
+        private SolidColorBrush _backgroundColor;
+
         public ShellViewModel(EditGroupViewModel editGroupVm, EditTaskViewModel editTaskVm,
-            TaskGroupListViewModel taskGroupVm)
+            TaskGroupListViewModel taskGroupVm, MenuViewModel menuVm, IEventAggregator eventAggregator)
         {
-            EditGroupVM = editGroupVm;
-            EditTaskVM = editTaskVm;
-            TaskGroupVM = taskGroupVm;
+            _eventAggregator = eventAggregator;
+            EditGroupVm = editGroupVm;
+            MenuVm = menuVm;
+            EditTaskVm = editTaskVm;
+            TaskGroupVm = taskGroupVm;
+            _eventAggregator.Subscribe(this);
 //            var group1 = new TaskGroupEntity
 //            {
 //                Name = "group1"
@@ -46,10 +56,28 @@ namespace ToDoManager.View.ViewModels
 //            taskM.SaveChanges();
         }
 
-        public TaskGroupListViewModel TaskGroupVM { get; set; }
+        public TaskGroupListViewModel TaskGroupVm { get; set; }
 
-        public EditTaskViewModel EditTaskVM { get; set; }
+        public EditTaskViewModel EditTaskVm { get; set; }
 
-        public EditGroupViewModel EditGroupVM { get; set; }
+        public EditGroupViewModel EditGroupVm { get; set; }
+        
+        public MenuViewModel MenuVm { get; set; }
+        
+        public SolidColorBrush BackgroundColor
+        {
+            get => _backgroundColor;
+            set
+            {
+                _backgroundColor = value;
+                NotifyOfPropertyChange(() => BackgroundColor);
+            }
+        }
+
+        public void Handle(SelectedBackgroungColorEvent message)
+        {
+            BackgroundColor = message.Color;
+        }
+        
     }
 }

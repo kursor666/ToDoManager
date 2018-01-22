@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Caliburn.Micro;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models;
@@ -12,7 +13,8 @@ using Action = System.Action;
 
 namespace ToDoManager.View.ViewModels
 {
-    public class TaskGroupListViewModel : PropertyChangedBase, IHandle<ReloadEvent>, IHandle<SelectedGroupEvent>
+    public class TaskGroupListViewModel : PropertyChangedBase, IHandle<ReloadEvent>, IHandle<SelectedGroupEvent>,
+        IHandle<SelectedBackgroungColorEvent>
     {
         #region Fields
 
@@ -21,10 +23,11 @@ namespace ToDoManager.View.ViewModels
         private ListGroupViewModel _selectedGroup;
         private ListTaskViewModel _selectedTask;
         private readonly IEventAggregator _eventAggregator;
-        private ObservableCollection<ListGroupViewModel> _groups;
-        private ObservableCollection<ListTaskViewModel> _tasks;
+        private List<ListGroupViewModel> _groups;
+        private List<ListTaskViewModel> _tasks;
         private readonly EntityToVmConverter _vmConverter;
         private Action _action;
+        private SolidColorBrush _backgroundColor;
 
         #endregion
 
@@ -36,11 +39,20 @@ namespace ToDoManager.View.ViewModels
             _eventAggregator = eventAggregator;
             _vmConverter = vmConverter;
             eventAggregator.Subscribe(this);
-
             AllTasks();
         }
 
-        public ObservableCollection<ListGroupViewModel> Groups
+        public SolidColorBrush BackgroundColor
+        {
+            get => _backgroundColor;
+            set
+            {
+                _backgroundColor = value;
+                NotifyOfPropertyChange(() => BackgroundColor);
+            }
+        }
+
+        public List<ListGroupViewModel> Groups
         {
             get => _groups;
             set
@@ -51,7 +63,7 @@ namespace ToDoManager.View.ViewModels
             }
         }
 
-        public ObservableCollection<ListTaskViewModel> Tasks
+        public List<ListTaskViewModel> Tasks
         {
             get => _tasks;
             set
@@ -64,22 +76,22 @@ namespace ToDoManager.View.ViewModels
 
         public void UncompletedOnly()
         {
-            Groups = _vmConverter.ToListViewModel(_groupModel.GetBy(entity => !entity.IsCompleted));
-            Tasks = _vmConverter.ToListViewModel(_taskModel.GetBy(entity => !entity.IsCompleted));
+            Groups = _vmConverter.ToListViewModel(_groupModel.GetBy(entity => !entity.IsCompleted)).ToList();
+            Tasks = _vmConverter.ToListViewModel(_taskModel.GetBy(entity => !entity.IsCompleted)).ToList();
             _action = UncompletedOnly;
         }
 
         public void CompletedOnly()
         {
-            Groups = _vmConverter.ToListViewModel(_groupModel.GetBy(entity => entity.IsCompleted));
-            Tasks = _vmConverter.ToListViewModel(_taskModel.GetBy(entity => entity.IsCompleted));
+            Groups = _vmConverter.ToListViewModel(_groupModel.GetBy(entity => entity.IsCompleted)).ToList();
+            Tasks = _vmConverter.ToListViewModel(_taskModel.GetBy(entity => entity.IsCompleted)).ToList();
             _action = CompletedOnly;
         }
 
         public void AllTasks()
         {
-            Groups = _vmConverter.ToListViewModel(_groupModel.GetAll());
-            Tasks = _vmConverter.ToListViewModel(_taskModel.GetAll());
+            Groups = _vmConverter.ToListViewModel(_groupModel.GetAll()).ToList();
+            Tasks = _vmConverter.ToListViewModel(_taskModel.GetAll()).ToList();
             _action = AllTasks;
         }
 
@@ -93,8 +105,7 @@ namespace ToDoManager.View.ViewModels
                 _selectedGroup = value;
                 if (_selectedGroup != null)
                 {
-                    var group = _groupModel.GetById(value.GroupEntity.Id);
-                    _eventAggregator.Publish(new EditEntityEvent<TaskGroupEntity>(group),
+                    _eventAggregator.Publish(new EditEntityEvent<TaskGroupEntity>(value.GroupEntity),
                         action => { Task.Factory.StartNew(action); });
                 }
 
@@ -112,8 +123,7 @@ namespace ToDoManager.View.ViewModels
                 _selectedTask = value;
                 if (_selectedTask != null)
                 {
-                    var task = _taskModel.GetById(value.TaskEntity.Id);
-                    _eventAggregator.Publish(new EditEntityEvent<TaskEntity>(task),
+                    _eventAggregator.Publish(new EditEntityEvent<TaskEntity>(value.TaskEntity),
                         action => { Task.Factory.StartNew(action); });
                 }
 
@@ -132,6 +142,10 @@ namespace ToDoManager.View.ViewModels
         {
             if (message.GroupListViewModel != null)
                 SelectedGroup = message.GroupListViewModel;
+        }
+
+        public void Handle(SelectedBackgroungColorEvent message)
+        {
         }
     }
 }

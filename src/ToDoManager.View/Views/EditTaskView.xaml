@@ -47,7 +47,7 @@
                     <ComboBox x:Name="Groups" Grid.Column="0" Margin="1">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock x:Name="Name" cal:Bind.Model="{Binding}" />
+                                <TextBlock x:Name="Name" cal:Bind.ModelWithoutContext="{Binding}" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
