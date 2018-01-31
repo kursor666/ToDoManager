@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using ToDoManager.Model.Entities;
@@ -13,8 +14,8 @@ namespace ToDoManager.View.ViewModels
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public class EditGroupViewModel : PropertyChangedBase, IHandle<ReloadEvent>,
-        IHandle<EditEntityEvent<TaskGroupEntity>>
+    public class EditGroupViewModel : PropertyChangedBase, IHandle<EventTypes>,
+        IHandle<EditEntityEvent<TaskGroupEntity>>, IHandle<ReloadEvent<TaskGroupEntity>>
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly ITaskGroupModel _groupModel;
@@ -30,15 +31,9 @@ namespace ToDoManager.View.ViewModels
             CreateNew();
         }
 
-        public List<TaskEntity> Tasks
-        {
-            get => _editGroupEntity.Tasks;
-            set
-            {
-                _editGroupEntity.Tasks = value;
-                NotifyOfPropertyChange(() => Tasks);
-            }
-        }
+        public ObservableCollection<TaskEntity> Tasks => _editGroupEntity.Tasks == null
+            ? null
+            : new ObservableCollection<TaskEntity>(_editGroupEntity.Tasks);
 
         public TaskEntity SelectedTask
         {
@@ -58,6 +53,9 @@ namespace ToDoManager.View.ViewModels
             {
                 if (_editGroupEntity.Name == value) return;
                 _editGroupEntity.Name = value;
+                _groupModel.EditGroup(_editGroupEntity);
+                _eventAggregator.Publish(new ReloadEvent<TaskGroupEntity>(_editGroupEntity),
+                    action => { Task.Factory.StartNew(action); });
                 NotifyOfPropertyChange(() => Name);
                 NotifyOfPropertyChange(() => CanSave);
             }
@@ -69,26 +67,35 @@ namespace ToDoManager.View.ViewModels
             set
             {
                 if (value.Equals(_editGroupEntity.IsCompleted)) return;
-                _editGroupEntity.IsCompleted = value;
+                _groupModel.SetCompleted(_editGroupEntity, value);
+                _eventAggregator.Publish(new ReloadEvent<TaskGroupEntity>(_editGroupEntity),
+                    action => { Task.Factory.StartNew(action); });
                 NotifyOfPropertyChange(() => IsCompleted);
             }
         }
 
+        public bool CanSave => !IsNullOrEmpty(Name) && Name.Length <= 100;
+
         public void Save()
         {
-            if (_editGroupEntity.Id == default(Guid))
-                _groupModel.AddGroup(_editGroupEntity);
-            else
-                _groupModel.EditGroup(_editGroupEntity);
-            _eventAggregator.Publish(new ReloadEvent(), action => { Task.Factory.StartNew(action); });
-        }
+            if (CanSave)
+            {
+                if (_editGroupEntity.Id == default(Guid))
+                    _groupModel.AddGroup(_editGroupEntity);
+                else
+                    _groupModel.EditGroup(_editGroupEntity);
+            }
 
-        public bool CanSave => !IsNullOrEmpty(Name) && Name.Length <= 100;
+            _groupModel.SaveChanges();
+        }
 
         public void Cancel()
         {
             if (_editGroupEntity.Id != default(Guid))
-                _groupModel.DiscardChanges(_editGroupEntity);
+            {
+                _groupModel.DiscardAllChanges();
+                _editGroupEntity = _groupModel.GetById(_editGroupEntity.Id);
+            }
             else
                 CreateNew();
             Refresh();
@@ -100,21 +107,22 @@ namespace ToDoManager.View.ViewModels
             Refresh();
         }
 
+        public bool CanRemove => _editGroupEntity.Id != default(Guid);
+
         public void Remove()
         {
             _groupModel.RemoveGroup(_editGroupEntity);
             CreateNew();
-            _eventAggregator.Publish(new ReloadEvent(), action => { Task.Factory.StartNew(action); });
+            _eventAggregator.Publish(EventTypes.Reload, action => { Task.Factory.StartNew(action); });
         }
-
-        public bool CanRemove => _editGroupEntity.Id != default(Guid);
 
         public void RemoveTaskFromGroup(TaskEntity model)
         {
             if (model == null) return;
             _groupModel.ExecuteTaskFromGroup(model);
-            NotifyOfPropertyChange(() => Tasks);
-            _eventAggregator.Publish(new ReloadEvent(), action => { Task.Factory.StartNew(action); });
+            _eventAggregator.Publish(new ReloadEvent<TaskEntity>(model), action => { Task.Factory.StartNew(action); });
+            _eventAggregator.Publish(new ReloadEvent<TaskGroupEntity>(_editGroupEntity),
+                action => { Task.Factory.StartNew(action); });
         }
 
         #region Handles
@@ -125,11 +133,32 @@ namespace ToDoManager.View.ViewModels
             Refresh();
         }
 
-        public void Handle(ReloadEvent message)
+        public void Handle(EventTypes message)
         {
-            Refresh();
+            switch (message)
+            {
+                case EventTypes.Reload:
+                    if (_editGroupEntity.Id != default(Guid))
+                        _editGroupEntity = _groupModel.GetById(_editGroupEntity.Id);
+                    Refresh();
+                    break;
+                case EventTypes.Save:
+                    Save();
+                    break;
+                case EventTypes.Cancel:
+                    Cancel();
+                    break;
+            }
         }
 
+        public void Handle(ReloadEvent<TaskGroupEntity> message)
+        {
+            if (message.Entity == null || message.Entity.Id != _editGroupEntity.Id) return;
+            Refresh();
+            _editGroupEntity = _groupModel.GetById(message.Entity.Id);
+        }
+        
         #endregion
+
     }
 }

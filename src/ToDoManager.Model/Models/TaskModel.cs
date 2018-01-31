@@ -9,18 +9,16 @@ using ToDoManager.Model.Repository.Interfaces;
 namespace ToDoManager.Model.Models
 {
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+    [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public class TaskModel : ITaskModel
     {
         private readonly IDbRepository<TaskEntity> _taskRepository;
         private readonly ITaskGroupModel _groupModel;
-        private readonly SettingsModel _settingsModel;
 
-        public TaskModel(IDbRepository<TaskEntity> taskRepository, ITaskGroupModel groupModel,
-            SettingsModel settingsModel)
+        public TaskModel(IDbRepository<TaskEntity> taskRepository, ITaskGroupModel groupModel )
         {
             _taskRepository = taskRepository;
             _groupModel = groupModel;
-            _settingsModel = settingsModel;
         }
 
         public void AddTask(TaskEntity entity)
@@ -28,7 +26,6 @@ namespace ToDoManager.Model.Models
             entity.IsCompleted = false;
             entity.CreatedUtc = DateTime.UtcNow;
             _taskRepository.Add(entity);
-            TrySaveChanges();
         }
 
         public IEnumerable<TaskEntity> GetAll()
@@ -43,41 +40,48 @@ namespace ToDoManager.Model.Models
 
         public IEnumerable<TaskEntity> GetBy(Func<TaskEntity, bool> predicate) => GetAll().Where(predicate);
 
-        public TaskEntity GetById(Guid id) => _taskRepository.GetById(id);
+        public TaskEntity GetById(Guid id)
+        {
+            var entity = _taskRepository.GetById(id);
+            entity.IsCompleted = entity.CompletedUtc != null;
+            return entity;
+        }
+
+        public void SetCompleted(TaskEntity taskEntity, bool isCompleted)
+        {
+            taskEntity.IsCompleted = isCompleted;
+            taskEntity.CompletedUtc = taskEntity.IsCompleted
+                ? (taskEntity.CompletedUtc ?? DateTime.UtcNow)
+                : (DateTime?) null;
+            EditTask(taskEntity);
+        }
 
         public void EditTask(TaskEntity entity)
         {
-            entity.CompletedUtc = entity.IsCompleted ? DateTime.UtcNow : (DateTime?) null;
             _taskRepository.Edit(entity);
-            TrySaveChanges();
         }
 
         public void RemoveTask(TaskEntity entity)
         {
             ExecuteTaskFromGroup(entity);
             _taskRepository.Delete(entity);
-            TrySaveChanges();
         }
 
         public void DiscardChanges(TaskEntity entity) => _taskRepository.DiscardChanges(entity);
 
         public void JoinTaskInGroup(TaskEntity taskEntity, TaskGroupEntity groupEntity)
         {
-            taskEntity.Group = groupEntity; // вот тут надо проверить говно с id шниками
+            taskEntity.Group = groupEntity;
             _taskRepository.Edit(taskEntity);
-            TrySaveChanges();
-        }
-
-        private void TrySaveChanges()
-        {
-            if (_settingsModel.AutoSaveEnabled)
-                SaveChanges();
         }
 
         public void SaveChanges() => _taskRepository.SaveChanges();
 
         public void DiscardAllChanges() => _taskRepository.DiscardAllChanges();
 
-        public void ExecuteTaskFromGroup(TaskEntity taskEntity) => _groupModel.ExecuteTaskFromGroup(taskEntity);
+        public void ExecuteTaskFromGroup(TaskEntity taskEntity)
+        {
+            _groupModel.ExecuteTaskFromGroup(taskEntity);
+        }
     }
 }

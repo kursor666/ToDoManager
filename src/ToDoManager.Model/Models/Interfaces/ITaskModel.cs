@@ -11,6 +11,7 @@ namespace ToDoManager.Model.Models.Interfaces
         IEnumerable<TaskEntity> GetAll();
         IEnumerable<TaskEntity> GetBy(Func<TaskEntity, bool> predicate);
         TaskEntity GetById(Guid id);
+        void SetCompleted(TaskEntity taskEntity, bool isCompleted);
         void EditTask(TaskEntity entity);
         void ExecuteTaskFromGroup(TaskEntity taskEntity);
         void RemoveTask(TaskEntity entity);

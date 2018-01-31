@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Caliburn.Micro;
 using ToDoManager.Model.Entities;
-using ToDoManager.Model.Models;
 using ToDoManager.Model.Models.Interfaces;
 using ToDoManager.View.EventHandlers;
 using ToDoManager.View.Utils;
@@ -13,7 +12,10 @@ using Action = System.Action;
 
 namespace ToDoManager.View.ViewModels
 {
-    public class TaskGroupListViewModel : PropertyChangedBase, IHandle<ReloadEvent>, IHandle<SelectedGroupEvent>,
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
+    public class TaskGroupListViewModel : PropertyChangedBase, IHandle<EventTypes>, IHandle<SelectedGroupEvent>,
         IHandle<SelectedBackgroungColorEvent>
     {
         #region Fields
@@ -30,7 +32,7 @@ namespace ToDoManager.View.ViewModels
         private SolidColorBrush _backgroundColor;
 
         #endregion
-
+        
         public TaskGroupListViewModel(ITaskModel taskModel, ITaskGroupModel groupModel,
             IEventAggregator eventAggregator, EntityToVmConverter vmConverter)
         {
@@ -63,6 +65,8 @@ namespace ToDoManager.View.ViewModels
             }
         }
 
+        
+
         public List<ListTaskViewModel> Tasks
         {
             get => _tasks;
@@ -73,7 +77,7 @@ namespace ToDoManager.View.ViewModels
                 NotifyOfPropertyChange(() => Tasks);
             }
         }
-
+        
         public void UncompletedOnly()
         {
             Groups = _vmConverter.ToListViewModel(_groupModel.GetBy(entity => !entity.IsCompleted)).ToList();
@@ -132,8 +136,9 @@ namespace ToDoManager.View.ViewModels
         }
 
 
-        public void Handle(ReloadEvent message)
+        public void Handle(EventTypes message)
         {
+            if (message != EventTypes.Reload) return;
             Refresh();
             Task.Factory.StartNew(_action);
         }
@@ -146,6 +151,7 @@ namespace ToDoManager.View.ViewModels
 
         public void Handle(SelectedBackgroungColorEvent message)
         {
+            BackgroundColor = message.Color;
         }
     }
 }

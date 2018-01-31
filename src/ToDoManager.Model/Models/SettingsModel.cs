@@ -1,9 +1,11 @@
-﻿using System.Windows.Media;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows.Media;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Repository.Interfaces;
 
 namespace ToDoManager.Model.Models
 {
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     public class SettingsModel
     {
         private readonly ISettingsRepository _settingsRepository;
@@ -14,16 +16,6 @@ namespace ToDoManager.Model.Models
             _settingsRepository = settingsRepository;
             _settingsEntity = _settingsRepository.GetSettings();
         }
-        
-        public bool AutoSaveEnabled
-        {
-            get => _settingsEntity.AutosaveEnabled;
-            set
-            {
-                _settingsEntity.AutosaveEnabled = value;
-                _settingsRepository.SaveSetting(_settingsEntity);
-            }
-        }
 
         public SolidColorBrush BackgroundColor
         {
@@ -31,6 +23,16 @@ namespace ToDoManager.Model.Models
             set
             {
                 _settingsEntity.BackgroundColor = value;
+                _settingsRepository.SaveSetting(_settingsEntity);
+            }
+        }
+
+        public double AutoSaveTimer
+        {
+            get => _settingsEntity.AutoSaveTimer;
+            set
+            {
+                _settingsEntity.AutoSaveTimer = value;
                 _settingsRepository.SaveSetting(_settingsEntity);
             }
         }

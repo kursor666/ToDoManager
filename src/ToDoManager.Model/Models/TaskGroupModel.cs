@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
 using ToDoManager.Model.Repository.Interfaces;
@@ -11,22 +9,31 @@ using ToDoManager.Model.Repository.Interfaces;
 namespace ToDoManager.Model.Models
 {
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+    [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public class TaskGroupModel : ITaskGroupModel
     {
         private readonly IDbRepository<TaskGroupEntity> _groupRepository;
-        private readonly SettingsModel _settingsModel;
 
-        public TaskGroupModel(IDbRepository<TaskGroupEntity> groupRepository, SettingsModel settingsModel)
+        public TaskGroupModel(IDbRepository<TaskGroupEntity> groupRepository)
         {
             _groupRepository = groupRepository;
-            _settingsModel = settingsModel;
         }
 
-        public void AddGroup(TaskGroupEntity groupEntity) => _groupRepository.Add(groupEntity);
+        public void AddGroup(TaskGroupEntity groupEntity)
+        {
+            _groupRepository.Add(groupEntity);
+        }
 
-        public void RemoveGroup(TaskGroupEntity groupEntity) => _groupRepository.Delete(groupEntity);
+        public void RemoveGroup(TaskGroupEntity groupEntity)
+        {
+            _groupRepository.Delete(groupEntity);
+        }
 
-        public void EditGroup(TaskGroupEntity groupEntity) => _groupRepository.Edit(groupEntity);
+        public void EditGroup(TaskGroupEntity groupEntity)
+        {
+            if (groupEntity.Id != default(Guid))
+            _groupRepository.Edit(groupEntity);
+        }
 
         public void SaveChanges() => _groupRepository.SaveChanges();
 
@@ -34,7 +41,24 @@ namespace ToDoManager.Model.Models
 
         public void DiscardChanges(TaskGroupEntity entity) => _groupRepository.DiscardChanges(entity);
 
-        public TaskGroupEntity GetById(Guid id) => _groupRepository.GetById(id);
+        public void SetCompleted(TaskGroupEntity groupEntity, bool isCompleted)
+        {
+            groupEntity.IsCompleted = isCompleted;
+            groupEntity.Tasks.ForEach(entity =>
+            {
+                entity.CompletedUtc = groupEntity.IsCompleted
+                    ? (entity.CompletedUtc ?? DateTime.UtcNow)
+                    : (DateTime?) null;
+            });
+            EditGroup(groupEntity);
+        }
+
+        public TaskGroupEntity GetById(Guid id)
+        {
+            var entity = _groupRepository.GetById(id);
+            entity.IsCompleted = entity.Tasks.TrueForAll(taskEntity => taskEntity.IsCompleted);
+            return entity;
+        }
 
         public IEnumerable<TaskEntity> GetTasksFromGroup(TaskGroupEntity groupEntity)
         {
@@ -43,7 +67,12 @@ namespace ToDoManager.Model.Models
         }
 
         public IEnumerable<TaskGroupEntity> GetAll() =>
-            _groupRepository.GetAll();
+            _groupRepository.GetAll().Select(entity =>
+            {
+                if (entity.Tasks!=null)
+                entity.IsCompleted = entity.Tasks.TrueForAll(taskEntity => taskEntity.IsCompleted);
+                return entity;
+            });
 
         public IEnumerable<TaskGroupEntity> GetBy(Func<TaskGroupEntity, bool> predicate)
         {
@@ -55,22 +84,16 @@ namespace ToDoManager.Model.Models
         {
             groupEntity.Tasks.Add(taskEntity);
             _groupRepository.Edit(groupEntity);
-            TrySaveChanges();
         }
 
         public void ExecuteTaskFromGroup(TaskEntity taskEntity)
         {
-            if (taskEntity.Group == null) return;
-            taskEntity.Group.Tasks.Remove(taskEntity);
-            if (!taskEntity.Group.Tasks.Any())
-                RemoveGroup(taskEntity.Group);
-            TrySaveChanges();
-        }
-
-        private void TrySaveChanges()
-        {
-            if (_settingsModel.AutoSaveEnabled)
-                SaveChanges();
+            var group = taskEntity.Group;
+            if (group == null) return;
+            group.Tasks.Remove(taskEntity);
+            taskEntity.Group = null;
+            if (!group.Tasks.Any())
+                RemoveGroup(group);
         }
     }
 }

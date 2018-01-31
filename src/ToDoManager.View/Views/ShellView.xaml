@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="400" d:DesignWidth="650"
+             d:DesignHeight="400" d:DesignWidth="650" MinWidth="550" MinHeight="300"
              Background="{Binding BackgroundColor}">
     <Grid>
         <Grid.RowDefinitions>
@@ -17,15 +17,18 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Border BorderBrush="CadetBlue" CornerRadius="3" BorderThickness="2" Margin="3" Grid.Column="0">
+            <Border BorderBrush="DarkGray" CornerRadius="3" BorderThickness="2" Margin="3" Grid.Column="0">
                 <ContentControl x:Name="TaskGroupVm" />
             </Border>
             <StackPanel Orientation="Vertical" Grid.Column="1">
-                <Border BorderBrush="CadetBlue" CornerRadius="3" BorderThickness="2" Margin="3">
-                    <ContentControl x:Name="EditTaskVm" />
+                <Border BorderBrush="DarkGray" CornerRadius="3" BorderThickness="2" Margin="3">
+                    <ContentControl x:Name="EditTaskVm" Margin="2"/>
                 </Border>
-                <Border BorderBrush="CadetBlue" CornerRadius="3" BorderThickness="2" Margin="3">
-                    <ContentControl x:Name="EditGroupVm" />
+                <Border BorderBrush="DarkGray" CornerRadius="3" BorderThickness="2" Margin="3">
+                    <ContentControl x:Name="EditGroupVm" Margin="2"/>
+                </Border>
+                <Border BorderBrush="DarkGray" CornerRadius="3" BorderThickness="2" Margin="3">
+                    <ContentControl x:Name="ManageVm" Margin="2"/>
                 </Border>
             </StackPanel>
         </Grid>

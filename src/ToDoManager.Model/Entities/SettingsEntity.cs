@@ -6,6 +6,6 @@ namespace ToDoManager.Model.Entities
     {
         public SolidColorBrush BackgroundColor { get; set; }
         
-        public bool AutosaveEnabled { get; set; }
+        public double AutoSaveTimer { get; set; }
     }
 }

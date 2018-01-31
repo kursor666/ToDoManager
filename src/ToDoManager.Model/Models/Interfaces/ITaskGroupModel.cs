@@ -11,6 +11,7 @@ namespace ToDoManager.Model.Models.Interfaces
         void RemoveGroup(TaskGroupEntity groupEntity);
         void EditGroup(TaskGroupEntity groupEntity);
         void ExecuteTaskFromGroup(TaskEntity taskEntity);
+        void SetCompleted(TaskGroupEntity groupEntity, bool isCompleted);
         TaskGroupEntity GetById(Guid id);
         IEnumerable<TaskEntity> GetTasksFromGroup(TaskGroupEntity groupEntity);
         IEnumerable<TaskGroupEntity> GetAll();

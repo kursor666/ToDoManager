@@ -76,14 +76,17 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EventHandlers\EditEntityEvent.cs" />
+    <Compile Include="EventHandlers\EventTypes.cs" />
     <Compile Include="EventHandlers\ReloadEvent.cs" />
     <Compile Include="EventHandlers\SelectedBackgroungColorEvent.cs" />
     <Compile Include="EventHandlers\SelectedGroupEvent.cs" />
+    <Compile Include="Utils\AutoSaveInterval.cs" />
     <Compile Include="Utils\EntityToVmConverter.cs" />
     <Compile Include="ViewModels\EditGroupViewModel.cs" />
     <Compile Include="ViewModels\EditTaskViewModel.cs" />
     <Compile Include="ViewModels\ListGroupViewModel.cs" />
     <Compile Include="ViewModels\ListTaskViewModel.cs" />
+    <Compile Include="ViewModels\ManageViewModel.cs" />
     <Compile Include="ViewModels\MenuViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\TaskGroupListViewModel.cs" />
@@ -91,6 +94,7 @@
     <Compile Include="Views\EditTaskView.xaml.cs" />
     <Compile Include="Views\ListGroupView.xaml.cs" />
     <Compile Include="Views\ListTaskView.xaml.cs" />
+    <Compile Include="Views\ManageView.xaml.cs" />
     <Compile Include="Views\MenuView.xaml.cs" />
     <Compile Include="Views\ShellView.xaml.cs" />
     <Compile Include="Views\TaskGroupListView.xaml.cs" />
@@ -134,6 +138,7 @@
     <Page Include="Views\EditTaskView.xaml" />
     <Page Include="Views\ListGroupView.xaml" />
     <Page Include="Views\ListTaskView.xaml" />
+    <Page Include="Views\ManageView.xaml" />
     <Page Include="Views\MenuView.xaml" />
     <Page Include="Views\ShellView.xaml" />
     <Page Include="Views\TaskGroupListView.xaml" />

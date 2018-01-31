@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Work\ToDoManager\src\ToDoManager.View\App.xaml
-7-520883929
+8707082518
 
-24-1640537505
+281710079034
 70-66687482
-Views\EditGroupView.xaml;Views\EditTaskView.xaml;Views\ListGroupView.xaml;Views\ListTaskView.xaml;Views\MenuView.xaml;Views\ShellView.xaml;Views\TaskGroupListView.xaml;
+Views\EditGroupView.xaml;Views\EditTaskView.xaml;Views\ListGroupView.xaml;Views\ListTaskView.xaml;Views\ManageView.xaml;Views\MenuView.xaml;Views\ShellView.xaml;Views\TaskGroupListView.xaml;
 
 False
 

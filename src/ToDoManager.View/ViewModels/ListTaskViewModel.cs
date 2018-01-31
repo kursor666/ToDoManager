@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Caliburn.Micro;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
@@ -6,9 +7,10 @@ using ToDoManager.View.EventHandlers;
 
 namespace ToDoManager.View.ViewModels
 {
-    public class ListTaskViewModel : PropertyChangedBase, IHandle<ReloadEvent>
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
+    public class ListTaskViewModel : PropertyChangedBase, IHandle<EventTypes>, IHandle<ReloadEvent<TaskEntity>>
     {
-        public TaskEntity TaskEntity { get; }
+        public TaskEntity TaskEntity { get; private set; }
         private readonly ITaskModel _taskModel;
         private readonly IEventAggregator _eventAggregator;
 
@@ -28,14 +30,25 @@ namespace ToDoManager.View.ViewModels
             set
             {
                 if (value.Equals(TaskEntity.IsCompleted)) return;
-                TaskEntity.IsCompleted = value;
-                _taskModel.EditTask(TaskEntity);
-                _eventAggregator.Publish(new ReloadEvent(), action => { Task.Factory.StartNew(action); });
+                _taskModel.SetCompleted(TaskEntity, value);
+                _eventAggregator.Publish(new ReloadEvent<TaskEntity>(TaskEntity),
+                    action => { Task.Factory.StartNew(action); });
+                if (TaskEntity.Group != null)
+                    _eventAggregator.Publish(new ReloadEvent<TaskGroupEntity>(TaskEntity.Group),
+                        action => { Task.Factory.StartNew(action); });
             }
         }
 
-        public void Handle(ReloadEvent message)
+        public void Handle(EventTypes message)
         {
+            if (message == EventTypes.Reload)
+                Refresh();
+        }
+
+        public void Handle(ReloadEvent<TaskEntity> message)
+        {
+            if (message.Entity == null || message.Entity.Id != TaskEntity.Id) return;
+            TaskEntity = _taskModel.GetById(message.Entity.Id);
             Refresh();
         }
     }

@@ -9,7 +9,8 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Margin="3">
         <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                  cal:Message.Attach="[Event PreviewMouseLeftButtonUp] = [Action SetSelectedGroup]">
+                  cal:Message.Attach="[Event PreviewMouseLeftButtonUp] = [Action SetSelectedGroup]"
+                  IsExpanded="{Binding GroupsExpanded}">
             <Expander.Header>
                 <TextBlock x:Name="Name" FontSize="13" Grid.Column="0" />
             </Expander.Header>

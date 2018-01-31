@@ -2,7 +2,7 @@
 {
     public class EditEntityEvent<TEntity>
     {
-        public TEntity Entity { get; set; }
+        public TEntity Entity { get; }
         
         public EditEntityEvent(TEntity entity)
         {

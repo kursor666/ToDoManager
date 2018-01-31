@@ -45,3 +45,5 @@ C:\Work\ToDoManager\src\ToDoManager.View\obj\Debug\Views\MenuView.g.cs
 C:\Work\ToDoManager\src\ToDoManager.View\obj\Debug\Views\MenuView.baml
 C:\Work\ToDoManager\src\ToDoManager.View\bin\Debug\Newtonsoft.Json.dll
 C:\Work\ToDoManager\src\ToDoManager.View\bin\Debug\Newtonsoft.Json.xml
+C:\Work\ToDoManager\src\ToDoManager.View\obj\Debug\Views\ManageView.baml
+C:\Work\ToDoManager\src\ToDoManager.View\obj\Debug\Views\ManageView.g.cs

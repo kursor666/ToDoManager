@@ -4,7 +4,7 @@ namespace ToDoManager.View.EventHandlers
 {
     public class SelectedGroupEvent
     {
-        public ListGroupViewModel GroupListViewModel { get; private set; }
+        public ListGroupViewModel GroupListViewModel { get; }
 
         public SelectedGroupEvent(ListGroupViewModel groupListViewModel)
         {

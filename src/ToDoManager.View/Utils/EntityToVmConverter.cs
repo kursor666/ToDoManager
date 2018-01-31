@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Caliburn.Micro;
 using ToDoManager.Model.Entities;
@@ -8,6 +8,7 @@ using ToDoManager.View.ViewModels;
 
 namespace ToDoManager.View.Utils
 {
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     public class EntityToVmConverter
     {
         private readonly ITaskGroupModel _groupModel;
