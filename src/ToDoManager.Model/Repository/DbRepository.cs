@@ -18,12 +18,14 @@ namespace ToDoManager.Model.Repository
         {
             _dbProvider = context;
             _dbSet = _dbProvider.Set<TEntityBase>();
+            _dbSet.Load();
         }
 
         public int Count => _dbSet.Count();
 
         public void Add(TEntityBase entity)
         {
+            _dbSet.Add(entity);
             _dbProvider.Entry(entity).State = EntityState.Added;
         }
 
@@ -32,10 +34,15 @@ namespace ToDoManager.Model.Repository
             _dbProvider.Entry(entity).State = EntityState.Deleted;
         }
 
-        public void Edit(TEntityBase entity) => _dbProvider.Entry(entity).State = EntityState.Modified;
+        public void Edit(TEntityBase entity)
+        {
+            if (_dbProvider.Entry(entity).State != EntityState.Added && _dbSet.Local.Contains(entity))
+                _dbProvider.Entry(entity).State = EntityState.Modified;
+        }
 
         public IEnumerable<TEntityBase> GetAll() =>
-            _dbSet.ToList().Where(entity => _dbProvider.Entry(entity).State != EntityState.Deleted).ToList();
+            _dbSet.Local.Where(entity => _dbProvider.Entry(entity).State != EntityState.Deleted)
+                .OrderBy(entity => entity.Name).ToList();
 
         public TEntityBase GetById(Guid id)
         {
@@ -50,9 +57,16 @@ namespace ToDoManager.Model.Repository
         public void DiscardAllChanges()
         {
             _dbProvider.ChangeTracker.DetectChanges();
-            var discardingChanges = _dbProvider.ChangeTracker.Entries()
-                .Where(entry => entry.State != EntityState.Unchanged).ToList();
-            discardingChanges.ForEach(entry => entry.Reload());
+            var entries = _dbProvider.ChangeTracker.Entries().ToList();
+            entries.Where(entry => entry.State == EntityState.Modified).ToList().ForEach(entry => entry.Reload());
+            entries.Where(entry => entry.State == EntityState.Deleted).ToList().ForEach(entry =>
+            {
+                entry.State = EntityState.Unchanged;
+                entry.Reload();
+            });
+            entries.Where(entry => entry.State == EntityState.Added).ToList()
+                .ForEach(entry => entry.State = EntityState.Deleted);
+            _dbProvider.SaveChanges();
         }
     }
 }

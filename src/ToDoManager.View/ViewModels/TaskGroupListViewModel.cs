@@ -15,24 +15,22 @@ namespace ToDoManager.View.ViewModels
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public class TaskGroupListViewModel : PropertyChangedBase, IHandle<EventTypes>, IHandle<SelectedGroupEvent>,
-        IHandle<SelectedBackgroungColorEvent>
+    public class TaskGroupListViewModel : PropertyChangedBase, IHandle<SelectedGroupEvent>,
+        IHandle<SelectedBackgroungColorEvent>, IHandle<ReloadListEvent<TaskEntity>>,
+        IHandle<ReloadListEvent<TaskGroupEntity>>, IHandle<ReloadEvent>
     {
-        #region Fields
-
         private readonly ITaskModel _taskModel;
         private readonly ITaskGroupModel _groupModel;
+        private readonly IEventAggregator _eventAggregator;
+        private readonly EntityToVmConverter _vmConverter;
         private ListGroupViewModel _selectedGroup;
         private ListTaskViewModel _selectedTask;
-        private readonly IEventAggregator _eventAggregator;
         private List<ListGroupViewModel> _groups;
         private List<ListTaskViewModel> _tasks;
-        private readonly EntityToVmConverter _vmConverter;
-        private Action _action;
+        private Action _taskAction;
+        private Action _groupAction;
         private SolidColorBrush _backgroundColor;
 
-        #endregion
-        
         public TaskGroupListViewModel(ITaskModel taskModel, ITaskGroupModel groupModel,
             IEventAggregator eventAggregator, EntityToVmConverter vmConverter)
         {
@@ -41,7 +39,7 @@ namespace ToDoManager.View.ViewModels
             _eventAggregator = eventAggregator;
             _vmConverter = vmConverter;
             eventAggregator.Subscribe(this);
-            AllTasks();
+            All();
         }
 
         public SolidColorBrush BackgroundColor
@@ -65,7 +63,6 @@ namespace ToDoManager.View.ViewModels
             }
         }
 
-        
 
         public List<ListTaskViewModel> Tasks
         {
@@ -77,27 +74,32 @@ namespace ToDoManager.View.ViewModels
                 NotifyOfPropertyChange(() => Tasks);
             }
         }
-        
+
         public void UncompletedOnly()
         {
-            Groups = _vmConverter.ToListViewModel(_groupModel.GetBy(entity => !entity.IsCompleted)).ToList();
-            Tasks = _vmConverter.ToListViewModel(_taskModel.GetBy(entity => !entity.IsCompleted)).ToList();
-            _action = UncompletedOnly;
+            _taskAction = () =>
+                Tasks = _vmConverter.ToListViewModel(_taskModel.GetBy(entity => !entity.IsCompleted)).ToList();
+            _groupAction = () =>
+                Groups = _vmConverter.ToListViewModel(_groupModel.GetBy(entity => !entity.IsCompleted)).ToList();
+            Handle(new ReloadEvent());
         }
 
         public void CompletedOnly()
         {
-            Groups = _vmConverter.ToListViewModel(_groupModel.GetBy(entity => entity.IsCompleted)).ToList();
-            Tasks = _vmConverter.ToListViewModel(_taskModel.GetBy(entity => entity.IsCompleted)).ToList();
-            _action = CompletedOnly;
+            _taskAction = () =>
+                Tasks = _vmConverter.ToListViewModel(_taskModel.GetBy(entity => entity.IsCompleted)).ToList();
+            _groupAction = () =>
+                Groups = _vmConverter.ToListViewModel(_groupModel.GetBy(entity => entity.IsCompleted)).ToList();
+            Handle(new ReloadEvent());
         }
 
-        public void AllTasks()
+        public void All()
         {
-            Groups = _vmConverter.ToListViewModel(_groupModel.GetAll()).ToList();
-            Tasks = _vmConverter.ToListViewModel(_taskModel.GetAll()).ToList();
-            _action = AllTasks;
+            _taskAction = () => Tasks = _vmConverter.ToListViewModel(_taskModel.GetAll()).ToList();
+            _groupAction = () => Groups = _vmConverter.ToListViewModel(_groupModel.GetAll()).ToList();
+            Handle(new ReloadEvent());
         }
+
 
         public ListGroupViewModel SelectedGroup
         {
@@ -135,23 +137,22 @@ namespace ToDoManager.View.ViewModels
             }
         }
 
-
-        public void Handle(EventTypes message)
-        {
-            if (message != EventTypes.Reload) return;
-            Refresh();
-            Task.Factory.StartNew(_action);
-        }
-
         public void Handle(SelectedGroupEvent message)
         {
             if (message.GroupListViewModel != null)
                 SelectedGroup = message.GroupListViewModel;
         }
 
-        public void Handle(SelectedBackgroungColorEvent message)
+        public void Handle(SelectedBackgroungColorEvent message) => BackgroundColor = message.Color;
+
+        public void Handle(ReloadListEvent<TaskEntity> message) => _taskAction.OnUIThread();
+
+        public void Handle(ReloadListEvent<TaskGroupEntity> message) => _groupAction.OnUIThread();
+
+        public void Handle(ReloadEvent message)
         {
-            BackgroundColor = message.Color;
+            _taskAction.OnUIThread();
+            _groupAction.OnUIThread();
         }
     }
 }

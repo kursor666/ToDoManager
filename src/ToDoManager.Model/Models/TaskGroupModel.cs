@@ -29,13 +29,11 @@ namespace ToDoManager.Model.Models
             _groupRepository.Delete(groupEntity);
         }
 
-        public void EditGroup(TaskGroupEntity groupEntity)
-        {
-            if (groupEntity.Id != default(Guid))
-            _groupRepository.Edit(groupEntity);
-        }
+        public void EditGroup(TaskGroupEntity groupEntity) => _groupRepository.Edit(groupEntity);
 
         public void SaveChanges() => _groupRepository.SaveChanges();
+        
+        public bool IsNew { get; set; }
 
         public void DiscardAllChanges() => _groupRepository.DiscardAllChanges();
 
@@ -56,7 +54,7 @@ namespace ToDoManager.Model.Models
         public TaskGroupEntity GetById(Guid id)
         {
             var entity = _groupRepository.GetById(id);
-            entity.IsCompleted = entity.Tasks.TrueForAll(taskEntity => taskEntity.IsCompleted);
+            entity.IsCompleted = entity.Tasks.TrueForAll(taskEntity => taskEntity.CompletedUtc!=null);
             return entity;
         }
 
@@ -69,8 +67,8 @@ namespace ToDoManager.Model.Models
         public IEnumerable<TaskGroupEntity> GetAll() =>
             _groupRepository.GetAll().Select(entity =>
             {
-                if (entity.Tasks!=null)
-                entity.IsCompleted = entity.Tasks.TrueForAll(taskEntity => taskEntity.IsCompleted);
+                if (entity.Tasks != null)
+                    entity.IsCompleted = entity.Tasks.TrueForAll(taskEntity => taskEntity.IsCompleted);
                 return entity;
             });
 

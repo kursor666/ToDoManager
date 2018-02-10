@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Diagnostics.CodeAnalysis;
 using ToDoManager.Model.Entities;
 
@@ -11,6 +12,9 @@ namespace ToDoManager.Model.Repository
     {
         public ToDoManagerContext() : base("TasksDb")
         {
+//            Configuration.AutoDetectChangesEnabled = false;
+//            Configuration.ProxyCreationEnabled = false;
+//            Configuration.LazyLoadingEnabled = true;
         }
 
         public DbSet<TaskEntity> Tasks { get; set; }
@@ -18,7 +22,7 @@ namespace ToDoManager.Model.Repository
         public DbSet<TaskGroupEntity> Groups { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
+        {   
             modelBuilder.Entity<TaskEntity>().HasKey(entity => entity.Id);
             modelBuilder.Entity<TaskEntity>().Property(p => p.Id)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);

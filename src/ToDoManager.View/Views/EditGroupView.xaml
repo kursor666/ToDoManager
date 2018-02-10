@@ -61,7 +61,7 @@
 
         </Grid>
         <StackPanel Grid.Column="1">
-            <Button x:Name="CreateNew" Content="Создать" Margin="2" />
+            <Button x:Name="AddNew" Content="Создать" Margin="2" />
             <Button x:Name="Remove" Content="Удалить" Margin="2" />
         </StackPanel>
     </Grid>

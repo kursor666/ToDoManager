@@ -1,6 +1,6 @@
 ﻿namespace ToDoManager.View.EventHandlers
 {
-    public class ReloadEvent
+    public class SaveEvent
     {
         
     }

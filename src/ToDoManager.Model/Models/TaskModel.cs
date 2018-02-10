@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.InteropServices;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
 using ToDoManager.Model.Repository.Interfaces;
@@ -15,7 +16,7 @@ namespace ToDoManager.Model.Models
         private readonly IDbRepository<TaskEntity> _taskRepository;
         private readonly ITaskGroupModel _groupModel;
 
-        public TaskModel(IDbRepository<TaskEntity> taskRepository, ITaskGroupModel groupModel )
+        public TaskModel(IDbRepository<TaskEntity> taskRepository, ITaskGroupModel groupModel)
         {
             _taskRepository = taskRepository;
             _groupModel = groupModel;
@@ -71,6 +72,8 @@ namespace ToDoManager.Model.Models
 
         public void JoinTaskInGroup(TaskEntity taskEntity, TaskGroupEntity groupEntity)
         {
+            if (taskEntity.Group!=null)
+                ExecuteTaskFromGroup(taskEntity);
             taskEntity.Group = groupEntity;
             _taskRepository.Edit(taskEntity);
         }

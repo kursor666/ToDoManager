@@ -24,11 +24,10 @@ namespace ToDoManager.View.ViewModels
             _eventAggregator = eventAggregator;
         }
 
-        public void NewTask() => _eventAggregator.Publish(new EditEntityEvent<TaskEntity>(
-            new TaskEntity()), action => Task.Factory.StartNew(action));
+        public void NewTask() => _eventAggregator.PublishOnUIThread(new EditEntityEvent<TaskEntity>(new TaskEntity()));
 
-        public void NewGroup() => _eventAggregator.Publish(new EditEntityEvent<TaskGroupEntity>(
-            new TaskGroupEntity()), action => Task.Factory.StartNew(action));
+        public void NewGroup() =>
+            _eventAggregator.PublishOnUIThread(new EditEntityEvent<TaskGroupEntity>(new TaskGroupEntity()));
 
         public void Exit() => Environment.Exit(0);
 
@@ -40,7 +39,7 @@ namespace ToDoManager.View.ViewModels
                 if (value)
                 {
                     _settingsModel.AutoSaveTimer = (double) AutoSaveInterval.Disable;
-                    _eventAggregator.Publish((AutoSaveInterval)_settingsModel.AutoSaveTimer, action => Task.Factory.StartNew(action));
+                    _eventAggregator.PublishOnUIThread((AutoSaveInterval) _settingsModel.AutoSaveTimer);
                 }
 
                 NotifyOfPropertyChange(() => DisableAutoSave);
@@ -55,7 +54,7 @@ namespace ToDoManager.View.ViewModels
                 if (value)
                 {
                     _settingsModel.AutoSaveTimer = (double) AutoSaveInterval.TenSecods;
-                    _eventAggregator.Publish((AutoSaveInterval)_settingsModel.AutoSaveTimer, action => Task.Factory.StartNew(action));
+                    _eventAggregator.PublishOnUIThread((AutoSaveInterval) _settingsModel.AutoSaveTimer);
                 }
 
                 NotifyOfPropertyChange(() => TenSecAutoSave);
@@ -70,9 +69,9 @@ namespace ToDoManager.View.ViewModels
                 if (value)
                 {
                     _settingsModel.AutoSaveTimer = (double) AutoSaveInterval.ThirtySecods;
-                    _eventAggregator.Publish((AutoSaveInterval)_settingsModel.AutoSaveTimer, action => Task.Factory.StartNew(action));
+                    _eventAggregator.PublishOnUIThread((AutoSaveInterval) _settingsModel.AutoSaveTimer);
                 }
-                
+
                 NotifyOfPropertyChange(() => ThirtySecAutoSave);
             }
         }
@@ -85,38 +84,25 @@ namespace ToDoManager.View.ViewModels
                 if (value)
                 {
                     _settingsModel.AutoSaveTimer = (double) AutoSaveInterval.SixtySeconds;
-                    _eventAggregator.Publish((AutoSaveInterval)_settingsModel.AutoSaveTimer, action => Task.Factory.StartNew(action));
+                    _eventAggregator.PublishOnUIThread((AutoSaveInterval) _settingsModel.AutoSaveTimer);
                 }
+
                 NotifyOfPropertyChange(() => SixtySecAutoSave);
             }
         }
 
-        public void SetWhite()
-        {
-            _settingsModel.BackgroundColor = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-            _eventAggregator.Publish(new SelectedBackgroungColorEvent(_settingsModel.BackgroundColor),
-                action => Task.Factory.StartNew(action));
-        }
+        public void SetWhite() => SetColor(Color.FromRgb(255, 255, 255));
 
-        public void SetLightGreen()
-        {
-            _settingsModel.BackgroundColor = new SolidColorBrush(Color.FromRgb(124, 249, 127));
-            _eventAggregator.Publish(new SelectedBackgroungColorEvent(_settingsModel.BackgroundColor),
-                action => Task.Factory.StartNew(action));
-        }
+        public void SetLightGreen() => SetColor(Color.FromRgb(124, 249, 127));
 
-        public void SetLightOrange()
-        {
-            _settingsModel.BackgroundColor = new SolidColorBrush(Color.FromRgb(255, 205, 130));
-            _eventAggregator.Publish(new SelectedBackgroungColorEvent(_settingsModel.BackgroundColor),
-                action => Task.Factory.StartNew(action));
-        }
+        public void SetLightOrange() => SetColor(Color.FromRgb(255, 205, 130));
 
-        public void SetLightBlue()
+        public void SetLightBlue() => SetColor(Color.FromRgb(178, 207, 255));
+
+        private void SetColor(Color color)
         {
-            _settingsModel.BackgroundColor = new SolidColorBrush(Color.FromRgb(178, 207, 255));
-            _eventAggregator.Publish(new SelectedBackgroungColorEvent(_settingsModel.BackgroundColor),
-                action => Task.Factory.StartNew(action));
+            _settingsModel.BackgroundColor = new SolidColorBrush(color);
+            _eventAggregator.PublishOnUIThread(new SelectedBackgroungColorEvent(_settingsModel.BackgroundColor));
         }
     }
 }

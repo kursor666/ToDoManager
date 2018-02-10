@@ -31,7 +31,7 @@
             </Grid.ColumnDefinitions>
             <RadioButton Name="UncompletedOnly" Content="Активные" GroupName="TaskComplete" Grid.Column="0" Margin="2" />
             <RadioButton Name="CompletedOnly" Content="Выполненые" GroupName="TaskComplete" Grid.Column="1" Margin="2" />
-            <RadioButton Name="AllTasks" IsChecked="True" Content="Все" GroupName="TaskComplete" Grid.Column="2"
+            <RadioButton Name="All" IsChecked="True" Content="Все" GroupName="TaskComplete" Grid.Column="2"
                          Margin="2" />
         </Grid>
         <ListBox x:Name="Groups" Grid.Column="0" Grid.Row="1" ItemTemplate="{StaticResource GroupTemplate}"

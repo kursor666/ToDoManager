@@ -14,8 +14,9 @@ namespace ToDoManager.View.ViewModels
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public class EditGroupViewModel : PropertyChangedBase, IHandle<EventTypes>,
-        IHandle<EditEntityEvent<TaskGroupEntity>>, IHandle<ReloadEvent<TaskGroupEntity>>
+    public class EditGroupViewModel : PropertyChangedBase,
+        IHandle<EditEntityEvent<TaskGroupEntity>>, IHandle<ReloadEntityEvent<TaskGroupEntity>>, IHandle<ReloadEvent>,
+        IHandle<SaveEvent>, IHandle<CancelEvent>
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly ITaskGroupModel _groupModel;
@@ -27,8 +28,8 @@ namespace ToDoManager.View.ViewModels
         {
             _eventAggregator = eventAggregator;
             _groupModel = groupModel;
-            _eventAggregator.Subscribe(this);
             CreateNew();
+            _eventAggregator.Subscribe(this);
         }
 
         public ObservableCollection<TaskEntity> Tasks => _editGroupEntity.Tasks == null
@@ -54,10 +55,11 @@ namespace ToDoManager.View.ViewModels
                 if (_editGroupEntity.Name == value) return;
                 _editGroupEntity.Name = value;
                 _groupModel.EditGroup(_editGroupEntity);
-                _eventAggregator.Publish(new ReloadEvent<TaskGroupEntity>(_editGroupEntity),
-                    action => { Task.Factory.StartNew(action); });
+                _eventAggregator.Publish(new ReloadEntityEvent<TaskGroupEntity>(_editGroupEntity),
+                    action => Task.Factory.StartNew(action));
                 NotifyOfPropertyChange(() => Name);
                 NotifyOfPropertyChange(() => CanSave);
+                NotifyOfPropertyChange(() => CanAddNew);
             }
         }
 
@@ -68,23 +70,19 @@ namespace ToDoManager.View.ViewModels
             {
                 if (value.Equals(_editGroupEntity.IsCompleted)) return;
                 _groupModel.SetCompleted(_editGroupEntity, value);
-                _eventAggregator.Publish(new ReloadEvent<TaskGroupEntity>(_editGroupEntity),
-                    action => { Task.Factory.StartNew(action); });
+                _eventAggregator.Publish(new ReloadEntityEvent<TaskGroupEntity>(_editGroupEntity), Execute.OnUIThread);
+                _eventAggregator.Publish(new ReloadListEvent<TaskEntity>(), Execute.OnUIThread);
                 NotifyOfPropertyChange(() => IsCompleted);
             }
         }
+
+        private void CreateNew() => _editGroupEntity = new TaskGroupEntity();
 
         public bool CanSave => !IsNullOrEmpty(Name) && Name.Length <= 100;
 
         public void Save()
         {
-            if (CanSave)
-            {
-                if (_editGroupEntity.Id == default(Guid))
-                    _groupModel.AddGroup(_editGroupEntity);
-                else
-                    _groupModel.EditGroup(_editGroupEntity);
-            }
+            if (CanSave && _editGroupEntity.Id != default(Guid)) _groupModel.EditGroup(_editGroupEntity);
 
             _groupModel.SaveChanges();
         }
@@ -98,13 +96,18 @@ namespace ToDoManager.View.ViewModels
             }
             else
                 CreateNew();
+
             Refresh();
         }
 
-        public void CreateNew()
+        public bool CanAddNew => _editGroupEntity.Id == default(Guid) && CanSave;
+
+        public void AddNew()
         {
-            _editGroupEntity = new TaskGroupEntity();
+            if (_editGroupEntity.Id == default(Guid))
+                _groupModel.AddGroup(_editGroupEntity);
             Refresh();
+            _eventAggregator.Publish(new ReloadListEvent<TaskGroupEntity>(), Execute.OnUIThread);
         }
 
         public bool CanRemove => _editGroupEntity.Id != default(Guid);
@@ -113,16 +116,23 @@ namespace ToDoManager.View.ViewModels
         {
             _groupModel.RemoveGroup(_editGroupEntity);
             CreateNew();
-            _eventAggregator.Publish(EventTypes.Reload, action => { Task.Factory.StartNew(action); });
+            _eventAggregator.Publish(new ReloadListEvent<TaskGroupEntity>(), Execute.OnUIThread);
         }
 
         public void RemoveTaskFromGroup(TaskEntity model)
         {
             if (model == null) return;
             _groupModel.ExecuteTaskFromGroup(model);
-            _eventAggregator.Publish(new ReloadEvent<TaskEntity>(model), action => { Task.Factory.StartNew(action); });
-            _eventAggregator.Publish(new ReloadEvent<TaskGroupEntity>(_editGroupEntity),
-                action => { Task.Factory.StartNew(action); });
+            _eventAggregator.Publish(new ReloadEntityEvent<TaskEntity>(model), Execute.OnUIThread);
+            if (_editGroupEntity.Tasks.Any())
+                _eventAggregator.Publish(new ReloadEntityEvent<TaskGroupEntity>(_editGroupEntity), Execute.OnUIThread);
+            else
+            {
+                _eventAggregator.PublishOnUIThread(new ReloadListEvent<TaskGroupEntity>());
+                CreateNew();
+                Refresh();
+            }
+            
         }
 
         #region Handles
@@ -133,32 +143,19 @@ namespace ToDoManager.View.ViewModels
             Refresh();
         }
 
-        public void Handle(EventTypes message)
-        {
-            switch (message)
-            {
-                case EventTypes.Reload:
-                    if (_editGroupEntity.Id != default(Guid))
-                        _editGroupEntity = _groupModel.GetById(_editGroupEntity.Id);
-                    Refresh();
-                    break;
-                case EventTypes.Save:
-                    Save();
-                    break;
-                case EventTypes.Cancel:
-                    Cancel();
-                    break;
-            }
-        }
-
-        public void Handle(ReloadEvent<TaskGroupEntity> message)
+        public void Handle(ReloadEntityEvent<TaskGroupEntity> message)
         {
             if (message.Entity == null || message.Entity.Id != _editGroupEntity.Id) return;
-            Refresh();
             _editGroupEntity = _groupModel.GetById(message.Entity.Id);
+            Refresh();
         }
-        
-        #endregion
 
+        public void Handle(ReloadEvent message) => Refresh();
+
+        public void Handle(SaveEvent message) => Save();
+
+        public void Handle(CancelEvent message) => Cancel();
+
+        #endregion
     }
 }

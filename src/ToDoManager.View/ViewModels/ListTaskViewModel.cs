@@ -8,7 +8,7 @@ using ToDoManager.View.EventHandlers;
 namespace ToDoManager.View.ViewModels
 {
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public class ListTaskViewModel : PropertyChangedBase, IHandle<EventTypes>, IHandle<ReloadEvent<TaskEntity>>
+    public class ListTaskViewModel : PropertyChangedBase, IHandle<ReloadEntityEvent<TaskEntity>>, IHandle<ReloadEvent>
     {
         public TaskEntity TaskEntity { get; private set; }
         private readonly ITaskModel _taskModel;
@@ -31,24 +31,19 @@ namespace ToDoManager.View.ViewModels
             {
                 if (value.Equals(TaskEntity.IsCompleted)) return;
                 _taskModel.SetCompleted(TaskEntity, value);
-                _eventAggregator.Publish(new ReloadEvent<TaskEntity>(TaskEntity),
-                    action => { Task.Factory.StartNew(action); });
+                _eventAggregator.Publish(new ReloadEntityEvent<TaskEntity>(TaskEntity), Execute.OnUIThread);
                 if (TaskEntity.Group != null)
-                    _eventAggregator.Publish(new ReloadEvent<TaskGroupEntity>(TaskEntity.Group),
-                        action => { Task.Factory.StartNew(action); });
+                    _eventAggregator.Publish(new ReloadEntityEvent<TaskGroupEntity>(TaskEntity.Group),
+                        Execute.OnUIThread);
             }
         }
 
-        public void Handle(EventTypes message)
-        {
-            if (message == EventTypes.Reload)
-                Refresh();
-        }
+        public void Handle(ReloadEvent message) => Refresh();
 
-        public void Handle(ReloadEvent<TaskEntity> message)
+        public void Handle(ReloadEntityEvent<TaskEntity> message)
         {
             if (message.Entity == null || message.Entity.Id != TaskEntity.Id) return;
-            TaskEntity = _taskModel.GetById(message.Entity.Id);
+            TaskEntity = message.Entity;
             Refresh();
         }
     }

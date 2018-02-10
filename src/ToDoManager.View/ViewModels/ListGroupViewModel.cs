@@ -11,14 +11,16 @@ using ToDoManager.View.Utils;
 namespace ToDoManager.View.ViewModels
 {
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public class ListGroupViewModel : PropertyChangedBase, IHandle<EventTypes>, IHandle<ReloadEvent<TaskGroupEntity>>
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+    public class ListGroupViewModel : PropertyChangedBase, IHandle<ReloadEvent>,
+        IHandle<ReloadEntityEvent<TaskGroupEntity>>,
+        IHandle<SelectedGroupEvent>
     {
-        public TaskGroupEntity GroupEntity { get; }
+        public TaskGroupEntity GroupEntity { get; set; }
         private readonly ITaskGroupModel _groupModel;
         private readonly EntityToVmConverter _entityToVmConverter;
         private readonly IEventAggregator _eventAggregator;
         private ListTaskViewModel _selectedTask;
-        private bool _groupsExpanded;
 
         public ListGroupViewModel(TaskGroupEntity groupEntity, ITaskGroupModel groupModel,
             EntityToVmConverter entityToVmConverter, IEventAggregator eventAggregator)
@@ -30,16 +32,15 @@ namespace ToDoManager.View.ViewModels
             eventAggregator.Subscribe(this);
         }
 
-        public List<ListTaskViewModel> Tasks =>
-            _entityToVmConverter.ToListViewModel(_groupModel.GetTasksFromGroup(GroupEntity)).ToList();
+        public List<ListTaskViewModel> Tasks => GroupEntity == null
+            ? null
+            : _entityToVmConverter.ToListViewModel(_groupModel.GetTasksFromGroup(GroupEntity)).ToList();
 
         public ListTaskViewModel SelectedTask
         {
             get => _selectedTask;
             set
             {
-                if (_selectedTask == value)
-                    return;
                 _selectedTask = value;
                 if (_selectedTask != null)
                     _eventAggregator.Publish(new EditEntityEvent<TaskEntity>(value.TaskEntity),
@@ -51,31 +52,25 @@ namespace ToDoManager.View.ViewModels
 
         public string Name => GroupEntity.Name;
 
-        public bool GroupsExpanded
-        {
-            get => _groupsExpanded;
-            set
-            {
-                _groupsExpanded = value;
-                NotifyOfPropertyChange(() => GroupsExpanded);
-            }
-        }
-        
         public void SetSelectedGroup()
         {
             _eventAggregator.Publish(new SelectedGroupEvent(this), action => { Task.Factory.StartNew(action); });
         }
 
-        public void Handle(EventTypes message)
+        public void Handle(ReloadEvent message) => Refresh();
+
+        public void Handle(ReloadEntityEvent<TaskGroupEntity> message)
         {
-            if (message == EventTypes.Reload)
-                Refresh();
+            if (message.Entity == null || GroupEntity.Id != message.Entity.Id) return;
+            GroupEntity = message.Entity;
+            Refresh();
         }
 
-        public void Handle(ReloadEvent<TaskGroupEntity> message)
+        public void Handle(SelectedGroupEvent message)
         {
-            if (message.Entity != null && GroupEntity.Id == message.Entity.Id)
-            Refresh();
+            if (message.GroupListViewModel?.GroupEntity != null &&
+                GroupEntity.Id != message.GroupListViewModel.GroupEntity.Id)
+                SelectedTask = null;
         }
     }
 }

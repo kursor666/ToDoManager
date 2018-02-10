@@ -10,8 +10,6 @@ using ToDoManager.Model.Repository;
 using ToDoManager.Model.Repository.Interfaces;
 using ToDoManager.View.Utils;
 using ToDoManager.View.ViewModels;
-#pragma warning disable 618
-
 
 namespace ToDoManager.View
 {
@@ -44,11 +42,10 @@ namespace ToDoManager.View
             _kernel.Bind<EditTaskViewModel>().ToSelf();
             _kernel.Bind<EntityToVmConverter>().ToSelf();
             _kernel.Bind<SettingsModel>().ToSelf().InSingletonScope();
-
         }
 
         protected override object GetInstance(Type service, string key) =>
-            string.IsNullOrEmpty(key) ? _kernel.Get(service) : _kernel.Get(service, key);
+            service!=null ? string.IsNullOrEmpty(key) ? _kernel.Get(service) : _kernel.Get(service, key) : null;
 
         protected override IEnumerable<object> GetAllInstances(Type service) => _kernel.GetAll(service);
 
