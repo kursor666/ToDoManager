@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ToDoManager.View.Utils
+﻿namespace ToDoManager.View.Utils
 {
     public enum AutoSaveInterval
     {

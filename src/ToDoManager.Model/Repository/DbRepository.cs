@@ -47,12 +47,14 @@ namespace ToDoManager.Model.Repository
         public TEntityBase GetById(Guid id)
         {
             var entity = _dbSet.Find(id);
-            return _dbProvider.Entry(entity).State == EntityState.Deleted ? null : entity;
+            return entity != null && _dbProvider.Entry(entity).State == EntityState.Deleted ? null : entity;
         }
 
         public void SaveChanges() => _dbProvider.SaveChanges();
 
         public void DiscardChanges(TEntityBase entity) => _dbProvider.Entry(entity).Reload();
+
+        public bool Contains(TEntityBase entity) => _dbSet.Local.Contains(entity);
 
         public void DiscardAllChanges()
         {

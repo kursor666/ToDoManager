@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Runtime.InteropServices;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
 using ToDoManager.Model.Repository.Interfaces;
@@ -22,7 +21,9 @@ namespace ToDoManager.Model.Models
             _groupModel = groupModel;
         }
 
-        public void AddTask(TaskEntity entity)
+        public bool Contains(TaskEntity entity) => _taskRepository.Contains(entity);
+
+        public void Add(TaskEntity entity)
         {
             entity.IsCompleted = false;
             entity.CreatedUtc = DateTime.UtcNow;
@@ -54,15 +55,15 @@ namespace ToDoManager.Model.Models
             taskEntity.CompletedUtc = taskEntity.IsCompleted
                 ? (taskEntity.CompletedUtc ?? DateTime.UtcNow)
                 : (DateTime?) null;
-            EditTask(taskEntity);
+            Edit(taskEntity);
         }
 
-        public void EditTask(TaskEntity entity)
+        public void Edit(TaskEntity entity)
         {
             _taskRepository.Edit(entity);
         }
 
-        public void RemoveTask(TaskEntity entity)
+        public void Remove(TaskEntity entity)
         {
             ExecuteTaskFromGroup(entity);
             _taskRepository.Delete(entity);
@@ -72,7 +73,7 @@ namespace ToDoManager.Model.Models
 
         public void JoinTaskInGroup(TaskEntity taskEntity, TaskGroupEntity groupEntity)
         {
-            if (taskEntity.Group!=null)
+            if (taskEntity.Group != null)
                 ExecuteTaskFromGroup(taskEntity);
             taskEntity.Group = groupEntity;
             _taskRepository.Edit(taskEntity);

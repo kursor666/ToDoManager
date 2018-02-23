@@ -10,6 +10,7 @@ namespace ToDoManager.Model.Models
 {
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
+    [SuppressMessage("ReSharper", "InvertIf")]
     public class TaskGroupModel : ITaskGroupModel
     {
         private readonly IDbRepository<TaskGroupEntity> _groupRepository;
@@ -19,21 +20,21 @@ namespace ToDoManager.Model.Models
             _groupRepository = groupRepository;
         }
 
-        public void AddGroup(TaskGroupEntity groupEntity)
+        public bool Contains(TaskGroupEntity entity) => _groupRepository.Contains(entity);
+
+        public void Add(TaskGroupEntity groupEntity)
         {
             _groupRepository.Add(groupEntity);
         }
 
-        public void RemoveGroup(TaskGroupEntity groupEntity)
+        public void Remove(TaskGroupEntity groupEntity)
         {
             _groupRepository.Delete(groupEntity);
         }
 
-        public void EditGroup(TaskGroupEntity groupEntity) => _groupRepository.Edit(groupEntity);
+        public void Edit(TaskGroupEntity groupEntity) => _groupRepository.Edit(groupEntity);
 
         public void SaveChanges() => _groupRepository.SaveChanges();
-        
-        public bool IsNew { get; set; }
 
         public void DiscardAllChanges() => _groupRepository.DiscardAllChanges();
 
@@ -48,20 +49,26 @@ namespace ToDoManager.Model.Models
                     ? (entity.CompletedUtc ?? DateTime.UtcNow)
                     : (DateTime?) null;
             });
-            EditGroup(groupEntity);
+            Edit(groupEntity);
         }
 
         public TaskGroupEntity GetById(Guid id)
         {
             var entity = _groupRepository.GetById(id);
-            entity.IsCompleted = entity.Tasks.TrueForAll(taskEntity => taskEntity.CompletedUtc!=null);
+            if (entity == null) return null;
+            entity.IsCompleted = entity.Tasks?.TrueForAll(taskEntity => taskEntity.CompletedUtc != null) ?? false;
             return entity;
         }
 
         public IEnumerable<TaskEntity> GetTasksFromGroup(TaskGroupEntity groupEntity)
         {
-            var group = _groupRepository.GetById(groupEntity.Id);
-            return group.Tasks;
+            if (groupEntity != null)
+            {
+                var group = GetById(groupEntity.Id);
+                if (group != null)
+                    return group.Tasks ?? Enumerable.Empty<TaskEntity>();
+            }
+            return Enumerable.Empty<TaskEntity>();
         }
 
         public IEnumerable<TaskGroupEntity> GetAll() =>
@@ -90,8 +97,6 @@ namespace ToDoManager.Model.Models
             if (group == null) return;
             group.Tasks.Remove(taskEntity);
             taskEntity.Group = null;
-            if (!group.Tasks.Any())
-                RemoveGroup(group);
         }
     }
 }

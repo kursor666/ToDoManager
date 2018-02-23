@@ -31,11 +31,7 @@ namespace ToDoManager.View.ViewModels
 
         public bool CanSave => _settingsModel.AutoSaveTimer == 0;
 
-        public void Save()
-        {
-            _eventAggregator.PublishOnUIThread(new SaveEvent());
-            //Reload();
-        }
+        public void Save() => _eventAggregator.PublishOnUIThread(new SaveEvent());
 
         public bool CanCancel => _settingsModel.AutoSaveTimer == 0;
 
@@ -55,6 +51,7 @@ namespace ToDoManager.View.ViewModels
                 _timer.Interval = TimeSpan.FromSeconds((double) message);
                 _timer.Start();
             }
+
             Refresh();
         }
     }

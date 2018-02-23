@@ -18,5 +18,6 @@ namespace ToDoManager.Model.Repository.Interfaces
         void SaveChanges();
         void DiscardAllChanges();
         void DiscardChanges(TEntityBase entity);
+        bool Contains(TEntityBase entity);
     }
 }

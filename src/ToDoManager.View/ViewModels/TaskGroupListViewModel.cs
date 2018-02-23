@@ -31,17 +31,6 @@ namespace ToDoManager.View.ViewModels
         private Action _groupAction;
         private SolidColorBrush _backgroundColor;
 
-        public TaskGroupListViewModel(ITaskModel taskModel, ITaskGroupModel groupModel,
-            IEventAggregator eventAggregator, EntityToVmConverter vmConverter)
-        {
-            _taskModel = taskModel;
-            _groupModel = groupModel;
-            _eventAggregator = eventAggregator;
-            _vmConverter = vmConverter;
-            eventAggregator.Subscribe(this);
-            All();
-        }
-
         public SolidColorBrush BackgroundColor
         {
             get => _backgroundColor;
@@ -57,7 +46,6 @@ namespace ToDoManager.View.ViewModels
             get => _groups;
             set
             {
-                if (value.Equals(_groups)) return;
                 _groups = value;
                 NotifyOfPropertyChange(() => Groups);
             }
@@ -69,10 +57,46 @@ namespace ToDoManager.View.ViewModels
             get => _tasks;
             set
             {
-                if (value.Equals(_tasks)) return;
                 _tasks = value;
                 NotifyOfPropertyChange(() => Tasks);
             }
+        }
+        
+        public ListGroupViewModel SelectedGroup
+        {
+            get => _selectedGroup;
+            set
+            {
+                if (_selectedGroup == value) return;
+                _selectedGroup = value;
+                if (_selectedGroup != null)
+                    _eventAggregator.PublishOnUIThread(new EditEntityEvent<TaskGroupEntity>(value.GroupEntity));
+                NotifyOfPropertyChange(() => SelectedGroup);
+            }
+        }
+
+        public ListTaskViewModel SelectedTask
+        {
+            get => _selectedTask;
+            set
+            {
+                if (_selectedTask == value) return;
+                _selectedTask = value;
+                if (_selectedTask != null)
+                    _eventAggregator.PublishOnUIThread(new EditEntityEvent<TaskEntity>(value.TaskEntity));
+                NotifyOfPropertyChange(() => SelectedTask);
+            }
+        }
+
+        public TaskGroupListViewModel(ITaskModel taskModel, ITaskGroupModel groupModel,
+            IEventAggregator eventAggregator, EntityToVmConverter vmConverter)
+        {
+            _taskModel = taskModel;
+            _groupModel = groupModel;
+            _eventAggregator = eventAggregator;
+            _vmConverter = vmConverter;
+            eventAggregator.Subscribe(this);
+            All();
         }
 
         public void UncompletedOnly()
@@ -98,43 +122,6 @@ namespace ToDoManager.View.ViewModels
             _taskAction = () => Tasks = _vmConverter.ToListViewModel(_taskModel.GetAll()).ToList();
             _groupAction = () => Groups = _vmConverter.ToListViewModel(_groupModel.GetAll()).ToList();
             Handle(new ReloadEvent());
-        }
-
-
-        public ListGroupViewModel SelectedGroup
-        {
-            get => _selectedGroup;
-            set
-            {
-                if (_selectedGroup == value)
-                    return;
-                _selectedGroup = value;
-                if (_selectedGroup != null)
-                {
-                    _eventAggregator.Publish(new EditEntityEvent<TaskGroupEntity>(value.GroupEntity),
-                        action => { Task.Factory.StartNew(action); });
-                }
-
-                NotifyOfPropertyChange(() => SelectedGroup);
-            }
-        }
-
-        public ListTaskViewModel SelectedTask
-        {
-            get => _selectedTask;
-            set
-            {
-                if (_selectedTask == value)
-                    return;
-                _selectedTask = value;
-                if (_selectedTask != null)
-                {
-                    _eventAggregator.Publish(new EditEntityEvent<TaskEntity>(value.TaskEntity),
-                        action => { Task.Factory.StartNew(action); });
-                }
-
-                NotifyOfPropertyChange(() => SelectedTask);
-            }
         }
 
         public void Handle(SelectedGroupEvent message)

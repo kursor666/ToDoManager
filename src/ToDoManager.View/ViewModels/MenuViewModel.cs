@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using Caliburn.Micro;
 using ToDoManager.Model.Entities;
@@ -24,10 +23,10 @@ namespace ToDoManager.View.ViewModels
             _eventAggregator = eventAggregator;
         }
 
-        public void NewTask() => _eventAggregator.PublishOnUIThread(new EditEntityEvent<TaskEntity>(new TaskEntity()));
+        public void NewTask() => _eventAggregator.PublishOnUIThread(new EditEntityEvent<TaskEntity>(null));
 
         public void NewGroup() =>
-            _eventAggregator.PublishOnUIThread(new EditEntityEvent<TaskGroupEntity>(new TaskGroupEntity()));
+            _eventAggregator.PublishOnUIThread(new EditEntityEvent<TaskGroupEntity>(null));
 
         public void Exit() => Environment.Exit(0);
 
@@ -37,11 +36,7 @@ namespace ToDoManager.View.ViewModels
             set
             {
                 if (value)
-                {
-                    _settingsModel.AutoSaveTimer = (double) AutoSaveInterval.Disable;
-                    _eventAggregator.PublishOnUIThread((AutoSaveInterval) _settingsModel.AutoSaveTimer);
-                }
-
+                    SetInterval(AutoSaveInterval.Disable);
                 NotifyOfPropertyChange(() => DisableAutoSave);
             }
         }
@@ -52,11 +47,7 @@ namespace ToDoManager.View.ViewModels
             set
             {
                 if (value)
-                {
-                    _settingsModel.AutoSaveTimer = (double) AutoSaveInterval.TenSecods;
-                    _eventAggregator.PublishOnUIThread((AutoSaveInterval) _settingsModel.AutoSaveTimer);
-                }
-
+                    SetInterval(AutoSaveInterval.TenSecods);
                 NotifyOfPropertyChange(() => TenSecAutoSave);
             }
         }
@@ -67,11 +58,7 @@ namespace ToDoManager.View.ViewModels
             set
             {
                 if (value)
-                {
-                    _settingsModel.AutoSaveTimer = (double) AutoSaveInterval.ThirtySecods;
-                    _eventAggregator.PublishOnUIThread((AutoSaveInterval) _settingsModel.AutoSaveTimer);
-                }
-
+                    SetInterval(AutoSaveInterval.ThirtySecods);
                 NotifyOfPropertyChange(() => ThirtySecAutoSave);
             }
         }
@@ -82,11 +69,7 @@ namespace ToDoManager.View.ViewModels
             set
             {
                 if (value)
-                {
-                    _settingsModel.AutoSaveTimer = (double) AutoSaveInterval.SixtySeconds;
-                    _eventAggregator.PublishOnUIThread((AutoSaveInterval) _settingsModel.AutoSaveTimer);
-                }
-
+                    SetInterval(AutoSaveInterval.SixtySeconds);
                 NotifyOfPropertyChange(() => SixtySecAutoSave);
             }
         }
@@ -103,6 +86,12 @@ namespace ToDoManager.View.ViewModels
         {
             _settingsModel.BackgroundColor = new SolidColorBrush(color);
             _eventAggregator.PublishOnUIThread(new SelectedBackgroungColorEvent(_settingsModel.BackgroundColor));
+        }
+
+        private void SetInterval(AutoSaveInterval interval)
+        {
+            _settingsModel.AutoSaveTimer = (double) interval;
+            _eventAggregator.PublishOnUIThread((AutoSaveInterval) _settingsModel.AutoSaveTimer);
         }
     }
 }

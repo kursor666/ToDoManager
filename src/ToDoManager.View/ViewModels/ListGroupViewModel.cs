@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
 using Caliburn.Micro;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
@@ -16,11 +15,12 @@ namespace ToDoManager.View.ViewModels
         IHandle<ReloadEntityEvent<TaskGroupEntity>>,
         IHandle<SelectedGroupEvent>
     {
-        public TaskGroupEntity GroupEntity { get; set; }
         private readonly ITaskGroupModel _groupModel;
         private readonly EntityToVmConverter _entityToVmConverter;
         private readonly IEventAggregator _eventAggregator;
         private ListTaskViewModel _selectedTask;
+
+        public TaskGroupEntity GroupEntity { get; set; }
 
         public ListGroupViewModel(TaskGroupEntity groupEntity, ITaskGroupModel groupModel,
             EntityToVmConverter entityToVmConverter, IEventAggregator eventAggregator)
@@ -43,26 +43,21 @@ namespace ToDoManager.View.ViewModels
             {
                 _selectedTask = value;
                 if (_selectedTask != null)
-                    _eventAggregator.Publish(new EditEntityEvent<TaskEntity>(value.TaskEntity),
-                        action => { Task.Factory.StartNew(action); });
-
+                    _eventAggregator.PublishOnUIThread(new EditEntityEvent<TaskEntity>(value.TaskEntity));
                 NotifyOfPropertyChange(() => SelectedTask);
             }
         }
 
         public string Name => GroupEntity.Name;
 
-        public void SetSelectedGroup()
-        {
-            _eventAggregator.Publish(new SelectedGroupEvent(this), action => { Task.Factory.StartNew(action); });
-        }
+        public void SetSelectedGroup() => _eventAggregator.PublishOnUIThread(new SelectedGroupEvent(this));
 
         public void Handle(ReloadEvent message) => Refresh();
 
         public void Handle(ReloadEntityEvent<TaskGroupEntity> message)
         {
             if (message.Entity == null || GroupEntity.Id != message.Entity.Id) return;
-            GroupEntity = message.Entity;
+            GroupEntity = _groupModel.GetById(message.Entity.Id);
             Refresh();
         }
 

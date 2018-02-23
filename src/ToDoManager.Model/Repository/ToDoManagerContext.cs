@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
-using System.Data.Entity.Core.Metadata.Edm;
 using System.Diagnostics.CodeAnalysis;
 using ToDoManager.Model.Entities;
 
@@ -12,9 +11,6 @@ namespace ToDoManager.Model.Repository
     {
         public ToDoManagerContext() : base("TasksDb")
         {
-//            Configuration.AutoDetectChangesEnabled = false;
-//            Configuration.ProxyCreationEnabled = false;
-//            Configuration.LazyLoadingEnabled = true;
         }
 
         public DbSet<TaskEntity> Tasks { get; set; }
@@ -27,9 +23,12 @@ namespace ToDoManager.Model.Repository
             modelBuilder.Entity<TaskEntity>().Property(p => p.Id)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             modelBuilder.Entity<TaskEntity>().Property(entity => entity.Note).HasMaxLength(5000);
+            modelBuilder.Entity<TaskEntity>().Property(entity => entity.Name).HasMaxLength(100);
             modelBuilder.Entity<TaskEntity>().Ignore(entity => entity.IsCompleted);
+            
 
             modelBuilder.Entity<TaskGroupEntity>().HasKey(entity => entity.Id);
+            modelBuilder.Entity<TaskGroupEntity>().Ignore(entity => entity.IsCompleted);
             modelBuilder.Entity<TaskGroupEntity>().Property(p => p.Id)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             modelBuilder.Entity<TaskGroupEntity>().Ignore(entity => entity.IsCompleted);

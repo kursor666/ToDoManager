@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
+using System.Linq;
 using Caliburn.Micro;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
@@ -20,7 +20,6 @@ namespace ToDoManager.View.ViewModels
         private readonly ITaskModel _taskModel;
         private readonly IEventAggregator _eventAggregator;
         private readonly ITaskGroupModel _groupModel;
-
         private TaskEntity _editTaskEntity;
 
         public EditTaskViewModel(ITaskModel taskModel, IEventAggregator eventAggregator, ITaskGroupModel groupModel)
@@ -44,17 +43,15 @@ namespace ToDoManager.View.ViewModels
                 if (value != null)
                 {
                     _taskModel.JoinTaskInGroup(_editTaskEntity, value);
-                    _eventAggregator.Publish(new ReloadEntityEvent<TaskGroupEntity>(value),
-                        action => Task.Factory.StartNew(action));
+                    if (_taskModel.Contains(_editTaskEntity))
+                        _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskGroupEntity>(value));
                 }
                 else
                     _taskModel.ExecuteTaskFromGroup(_editTaskEntity);
 
                 if (oldGroup != null)
-                    _eventAggregator.Publish(new ReloadEntityEvent<TaskGroupEntity>(oldGroup),
-                        action => Task.Factory.StartNew(action));
-                _eventAggregator.Publish(new ReloadEntityEvent<TaskEntity>(_editTaskEntity),
-                    action => Task.Factory.StartNew(action));
+                    _eventAggregator.PublishOnUIThread(
+                        new ReloadEntityEvent<TaskGroupEntity>(oldGroup));
 
                 NotifyOfPropertyChange(() => SelectedGroup);
             }
@@ -69,10 +66,9 @@ namespace ToDoManager.View.ViewModels
             {
                 if (_editTaskEntity.Name == value) return;
                 _editTaskEntity.Name = value;
-                _taskModel.EditTask(_editTaskEntity);
-                _eventAggregator.Publish(new ReloadEntityEvent<TaskEntity>(_editTaskEntity),
-                    action => { Task.Factory.StartNew(action); });
-
+                _taskModel.Edit(_editTaskEntity);
+                if (_taskModel.Contains(_editTaskEntity))
+                    _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskEntity>(_editTaskEntity));
                 NotifyOfPropertyChange(() => Name);
                 NotifyOfPropertyChange(() => CanSave);
                 NotifyOfPropertyChange(() => CanAddNew);
@@ -86,7 +82,7 @@ namespace ToDoManager.View.ViewModels
             {
                 if (_editTaskEntity.Note == value) return;
                 _editTaskEntity.Note = value;
-                _taskModel.EditTask(_editTaskEntity);
+                _taskModel.Edit(_editTaskEntity);
                 NotifyOfPropertyChange(() => Note);
             }
         }
@@ -96,9 +92,10 @@ namespace ToDoManager.View.ViewModels
             get => _editTaskEntity.IsCompleted;
             set
             {
-                if (value.Equals(_editTaskEntity.IsCompleted)) return;
+                if (value == _editTaskEntity.IsCompleted) return;
                 _taskModel.SetCompleted(_editTaskEntity, value);
-                _eventAggregator.Publish(new ReloadEntityEvent<TaskEntity>(_editTaskEntity), Execute.OnUIThread);
+                if (_taskModel.Contains(_editTaskEntity))
+                    _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskEntity>(_editTaskEntity));
                 NotifyOfPropertyChange(() => IsCompleted);
             }
         }
@@ -111,15 +108,14 @@ namespace ToDoManager.View.ViewModels
 
         public void Save()
         {
-            if (CanSave && _editTaskEntity.Id != default(Guid)) _taskModel.EditTask(_editTaskEntity);
-
+            if (CanSave && _taskModel.Contains(_editTaskEntity)) _taskModel.Edit(_editTaskEntity);
             _taskModel.SaveChanges();
         }
 
         public void Cancel()
         {
             _taskModel.DiscardAllChanges();
-            _editTaskEntity = _editTaskEntity.Id != default(Guid)
+            _editTaskEntity = _taskModel.Contains(_editTaskEntity)
                 ? _taskModel.GetById(_editTaskEntity.Id)
                 : new TaskEntity();
             Refresh();
@@ -127,36 +123,46 @@ namespace ToDoManager.View.ViewModels
 
         private void CreateNew() => _editTaskEntity = new TaskEntity();
 
-        public bool CanAddNew => _editTaskEntity.Id == default(Guid) && CanSave;
+        public bool CanAddNew => !_taskModel.Contains(_editTaskEntity) && CanSave;
 
         public void AddNew()
         {
-            if (CanSave && _editTaskEntity.Id == default(Guid))
-                _taskModel.AddTask(_editTaskEntity);
+            if (CanSave && !_taskModel.Contains(_editTaskEntity))
+                _taskModel.Add(_editTaskEntity);
             Refresh();
-            _eventAggregator.Publish(new ReloadListEvent<TaskEntity>(),
-                Execute.OnUIThread);
+            _eventAggregator.PublishOnUIThread(new ReloadListEvent<TaskEntity>());
+            if (_editTaskEntity.Group != null)
+                _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskGroupEntity>(_editTaskEntity.Group));
         }
 
-        public bool CanRemove => _editTaskEntity.Id != default(Guid);
+        public bool CanRemove => _taskModel.Contains(_editTaskEntity);
 
         public void Remove()
         {
-            _taskModel.RemoveTask(_editTaskEntity);
+            var group = _editTaskEntity.Group;
+            _taskModel.Remove(_editTaskEntity);
+            _eventAggregator.PublishOnUIThread(new ReloadListEvent<TaskEntity>());
+            if (group != null)
+                _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskGroupEntity>(group));
             CreateNew();
-            _eventAggregator.Publish(new ReloadEvent(), action => { Task.Factory.StartNew(action); });
+            Refresh();
         }
 
         public void Handle(EditEntityEvent<TaskEntity> message)
         {
-            if (message.Entity != null) _editTaskEntity = message.Entity;
+            if (message.Entity == null)
+                CreateNew();
+            else if (message.Entity.Id == default(Guid))
+                _editTaskEntity = message.Entity;
+            else
+                _editTaskEntity = _taskModel.GetById(message.Entity.Id);
             Refresh();
         }
 
         public void Handle(ReloadEntityEvent<TaskEntity> message)
         {
-            if (message.Entity != null && message.Entity.Id == _editTaskEntity.Id)
-                Refresh();
+            if (message.Entity == null || message.Entity.Id != _editTaskEntity.Id) return;
+            Refresh();
         }
 
         public void Handle(ReloadEvent message) => Refresh();

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using Caliburn.Micro;
 using ToDoManager.Model.Models;
@@ -18,37 +17,10 @@ namespace ToDoManager.View.ViewModels
         private readonly IEventAggregator _eventAggregator;
         private SolidColorBrush _backgroundColor;
 
-        public ShellViewModel(
-            SettingsModel settingsModel, 
-            EditGroupViewModel editGroupVm,
-            EditTaskViewModel editTaskVm,
-            TaskGroupListViewModel taskGroupVm,
-            MenuViewModel menuVm,
-            IEventAggregator eventAggregator,
-            ManageViewModel manageViewModel
-            )
-        {
-            _settingsModel = settingsModel;
-            _eventAggregator = eventAggregator;
-            EditGroupVm = editGroupVm;
-            MenuVm = menuVm;
-            ManageVm = manageViewModel;
-            EditTaskVm = editTaskVm;
-            TaskGroupVm = taskGroupVm;
-            _eventAggregator.Subscribe(this);
-
-            _eventAggregator.Publish(new SelectedBackgroungColorEvent(_settingsModel.BackgroundColor),
-                action => Task.Factory.StartNew(action));
-        }
-
         public TaskGroupListViewModel TaskGroupVm { get; set; }
-
         public EditTaskViewModel EditTaskVm { get; set; }
-
         public EditGroupViewModel EditGroupVm { get; set; }
-
         public MenuViewModel MenuVm { get; set; }
-        
         public ManageViewModel ManageVm { get; set; }
 
         public SolidColorBrush BackgroundColor
@@ -59,6 +31,21 @@ namespace ToDoManager.View.ViewModels
                 _backgroundColor = value;
                 NotifyOfPropertyChange(() => BackgroundColor);
             }
+        }
+
+        public ShellViewModel(SettingsModel settingsModel, EditGroupViewModel editGroupVm, EditTaskViewModel editTaskVm,
+            TaskGroupListViewModel taskGroupVm, MenuViewModel menuVm, IEventAggregator eventAggregator,
+            ManageViewModel manageViewModel)
+        {
+            _settingsModel = settingsModel;
+            _eventAggregator = eventAggregator;
+            EditGroupVm = editGroupVm;
+            MenuVm = menuVm;
+            ManageVm = manageViewModel;
+            EditTaskVm = editTaskVm;
+            TaskGroupVm = taskGroupVm;
+            _eventAggregator.Subscribe(this);
+            _eventAggregator.PublishOnUIThread(new SelectedBackgroungColorEvent(_settingsModel.BackgroundColor));
         }
 
         public void Handle(SelectedBackgroungColorEvent message)

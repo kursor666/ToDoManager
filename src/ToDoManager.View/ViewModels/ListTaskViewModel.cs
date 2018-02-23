@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 using Caliburn.Micro;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
@@ -10,9 +9,10 @@ namespace ToDoManager.View.ViewModels
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class ListTaskViewModel : PropertyChangedBase, IHandle<ReloadEntityEvent<TaskEntity>>, IHandle<ReloadEvent>
     {
-        public TaskEntity TaskEntity { get; private set; }
         private readonly ITaskModel _taskModel;
         private readonly IEventAggregator _eventAggregator;
+
+        public TaskEntity TaskEntity { get; private set; }
 
         public ListTaskViewModel(TaskEntity taskEntity, ITaskModel taskModel, IEventAggregator eventAggregator)
         {
@@ -31,10 +31,9 @@ namespace ToDoManager.View.ViewModels
             {
                 if (value.Equals(TaskEntity.IsCompleted)) return;
                 _taskModel.SetCompleted(TaskEntity, value);
-                _eventAggregator.Publish(new ReloadEntityEvent<TaskEntity>(TaskEntity), Execute.OnUIThread);
+                _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskEntity>(TaskEntity));
                 if (TaskEntity.Group != null)
-                    _eventAggregator.Publish(new ReloadEntityEvent<TaskGroupEntity>(TaskEntity.Group),
-                        Execute.OnUIThread);
+                    _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskGroupEntity>(TaskEntity.Group));
             }
         }
 
