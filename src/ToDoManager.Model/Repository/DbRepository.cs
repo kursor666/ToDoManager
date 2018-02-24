@@ -25,6 +25,8 @@ namespace ToDoManager.Model.Repository
 
         public void Add(TEntityBase entity)
         {
+            if (entity.Id != default(Guid)) return;
+            entity.Id = Guid.NewGuid();
             _dbSet.Add(entity);
             _dbProvider.Entry(entity).State = EntityState.Added;
         }

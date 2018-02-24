@@ -26,10 +26,8 @@
             </Grid.RowDefinitions>
             <TextBlock Text="Имя группы" Grid.Column="0" Grid.Row="0" />
             <TextBox x:Name="Name" Grid.Column="1" Grid.Row="0" HorizontalContentAlignment="Stretch" Margin="2" />
-
             <TextBlock Text="Выполнено" Grid.Column="0" Grid.Row="1" />
             <CheckBox x:Name="IsCompleted" Grid.Column="1" Grid.Row="1" Margin="2" />
-
             <Expander Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
                 <Expander.Header>
                     <TextBlock Text="Задачи" />
@@ -40,9 +38,9 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <ListBox x:Name="Tasks" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Margin="1">
                         <ListBox.ItemTemplate>
@@ -55,15 +53,11 @@
                     <Button Content="Исключить" Margin="1" Grid.Column="1" Grid.Row="0"
                             cal:Message.Attach="[Event Click] = [Action RemoveTaskFromGroup(Tasks.SelectedItem)]" />
                 </Grid>
-                
             </Expander>
-
-
         </Grid>
         <StackPanel Grid.Column="1">
             <Button x:Name="AddNew" Content="Создать" Margin="2" />
             <Button x:Name="Remove" Content="Удалить" Margin="2" />
         </StackPanel>
     </Grid>
-
 </UserControl>

@@ -23,16 +23,6 @@ namespace ToDoManager.View.ViewModels
         public MenuViewModel MenuVm { get; set; }
         public ManageViewModel ManageVm { get; set; }
 
-        public SolidColorBrush BackgroundColor
-        {
-            get => _backgroundColor;
-            set
-            {
-                _backgroundColor = value;
-                NotifyOfPropertyChange(() => BackgroundColor);
-            }
-        }
-
         public ShellViewModel(SettingsModel settingsModel, EditGroupViewModel editGroupVm, EditTaskViewModel editTaskVm,
             TaskGroupListViewModel taskGroupVm, MenuViewModel menuVm, IEventAggregator eventAggregator,
             ManageViewModel manageViewModel)
@@ -46,6 +36,16 @@ namespace ToDoManager.View.ViewModels
             TaskGroupVm = taskGroupVm;
             _eventAggregator.Subscribe(this);
             _eventAggregator.PublishOnUIThread(new SelectedBackgroungColorEvent(_settingsModel.BackgroundColor));
+        }
+
+        public SolidColorBrush BackgroundColor
+        {
+            get => _backgroundColor;
+            set
+            {
+                _backgroundColor = value;
+                NotifyOfPropertyChange(() => BackgroundColor);
+            }
         }
 
         public void Handle(SelectedBackgroungColorEvent message)

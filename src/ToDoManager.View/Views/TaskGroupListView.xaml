@@ -3,9 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:cal="http://www.caliburnproject.org"
-             xmlns:models="clr-namespace:ToDoManager.Model.Entities;assembly=ToDoManager.Model"
-             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -13,7 +10,6 @@
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         </Style>
     </UserControl.Resources>
-
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -35,9 +31,9 @@
                          Margin="2" />
         </Grid>
         <ListBox x:Name="Groups" Grid.Column="0" Grid.Row="1" ItemTemplate="{StaticResource GroupTemplate}"
-                 ItemContainerStyle="{ StaticResource TaskItemStyle}" Background="{Binding BackgroundColor}" />
+                 ItemContainerStyle="{StaticResource TaskItemStyle}" Background="{Binding BackgroundColor}" />
         <ListBox x:Name="Tasks" ItemTemplate="{StaticResource TaskTemplate}"
-                 ItemContainerStyle="{ StaticResource TaskItemStyle}" Grid.Column="1" Grid.Row="1"
+                 ItemContainerStyle="{StaticResource TaskItemStyle}" Grid.Column="1" Grid.Row="1"
                  Background="{Binding BackgroundColor}" />
     </Grid>
 </UserControl>

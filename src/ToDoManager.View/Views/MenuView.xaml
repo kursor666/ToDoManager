@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <Menu>
@@ -22,7 +21,6 @@
                 <RadioButton x:Name="ThirtySecAutoSave" Content="30 секунд" GroupName="Timer" />
                 <RadioButton x:Name="SixtySecAutoSave" Content="60 секунд" GroupName="Timer" />
             </MenuItem>
-
         </MenuItem>
         <MenuItem Header="Окно">
             <MenuItem Header="Цвет фона">
@@ -32,5 +30,6 @@
                 <MenuItem Header="Светло-голубой" x:Name="SetLightBlue" />
             </MenuItem>
         </MenuItem>
+        <MenuItem Header="О программе" x:Name="AboutWindowShow" />
     </Menu>
 </UserControl>

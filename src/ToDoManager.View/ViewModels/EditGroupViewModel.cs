@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Caliburn.Micro;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
@@ -52,8 +51,7 @@ namespace ToDoManager.View.ViewModels
                 if (_editGroupEntity.Name == value) return;
                 _editGroupEntity.Name = value;
                 _groupModel.Edit(_editGroupEntity);
-                if (_groupModel.Contains(_editGroupEntity))
-                    _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskGroupEntity>(_editGroupEntity));
+                _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskGroupEntity>(_editGroupEntity));
                 NotifyOfPropertyChange(() => Name);
                 NotifyOfPropertyChange(() => CanSave);
                 NotifyOfPropertyChange(() => CanAddNew);
@@ -67,16 +65,13 @@ namespace ToDoManager.View.ViewModels
             {
                 if (value.Equals(_editGroupEntity.IsCompleted)) return;
                 _groupModel.SetCompleted(_editGroupEntity, value);
-                if (_groupModel.Contains(_editGroupEntity))
-                    _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskGroupEntity>(_editGroupEntity));
+                _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskGroupEntity>(_editGroupEntity));
                 _eventAggregator.PublishOnUIThread(new ReloadListEvent<TaskEntity>());
                 foreach (var task in _editGroupEntity.Tasks)
                     _eventAggregator.PublishOnBackgroundThread(new ReloadEntityEvent<TaskEntity>(task));
                 NotifyOfPropertyChange(() => IsCompleted);
             }
         }
-
-        private void CreateNew() => _editGroupEntity = new TaskGroupEntity();
 
         public bool CanSave => !IsNullOrEmpty(Name) && Name.Length <= 100;
 
@@ -102,6 +97,8 @@ namespace ToDoManager.View.ViewModels
 
         public bool CanAddNew => !_groupModel.Contains(_editGroupEntity) && CanSave;
 
+        public bool CanRemove => _groupModel.Contains(_editGroupEntity);
+
         public void AddNew()
         {
             if (!_groupModel.Contains(_editGroupEntity))
@@ -109,8 +106,6 @@ namespace ToDoManager.View.ViewModels
             Refresh();
             _eventAggregator.PublishOnUIThread(new ReloadListEvent<TaskGroupEntity>());
         }
-
-        public bool CanRemove => _groupModel.Contains(_editGroupEntity);
 
         public void Remove()
         {
@@ -125,17 +120,10 @@ namespace ToDoManager.View.ViewModels
             if (model == null) return;
             _groupModel.ExecuteTaskFromGroup(model);
             _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskEntity>(model));
-            if (_editGroupEntity.Tasks.Any())
-                _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskGroupEntity>(_editGroupEntity));
-            else
-            {
-                _eventAggregator.PublishOnUIThread(new ReloadListEvent<TaskGroupEntity>());
-                CreateNew();
-                Refresh();
-            }
+            _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskGroupEntity>(_editGroupEntity));
         }
 
-        #region Handles
+        private void CreateNew() => _editGroupEntity = new TaskGroupEntity();
 
         public void Handle(EditEntityEvent<TaskGroupEntity> message)
         {
@@ -151,8 +139,7 @@ namespace ToDoManager.View.ViewModels
         public void Handle(ReloadEntityEvent<TaskGroupEntity> message)
         {
             if (message.Entity == null || message.Entity.Id != _editGroupEntity.Id) return;
-            if (_groupModel.Contains(_editGroupEntity))
-                _editGroupEntity = _groupModel.GetById(message.Entity.Id);
+            _editGroupEntity = _groupModel.GetById(message.Entity.Id);
             Refresh();
         }
 
@@ -161,7 +148,5 @@ namespace ToDoManager.View.ViewModels
         public void Handle(SaveEvent message) => Save();
 
         public void Handle(CancelEvent message) => Cancel();
-
-        #endregion
     }
 }

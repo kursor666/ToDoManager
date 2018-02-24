@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Caliburn.Micro;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
@@ -67,8 +66,7 @@ namespace ToDoManager.View.ViewModels
                 if (_editTaskEntity.Name == value) return;
                 _editTaskEntity.Name = value;
                 _taskModel.Edit(_editTaskEntity);
-                if (_taskModel.Contains(_editTaskEntity))
-                    _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskEntity>(_editTaskEntity));
+                _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskEntity>(_editTaskEntity));
                 NotifyOfPropertyChange(() => Name);
                 NotifyOfPropertyChange(() => CanSave);
                 NotifyOfPropertyChange(() => CanAddNew);
@@ -94,8 +92,7 @@ namespace ToDoManager.View.ViewModels
             {
                 if (value == _editTaskEntity.IsCompleted) return;
                 _taskModel.SetCompleted(_editTaskEntity, value);
-                if (_taskModel.Contains(_editTaskEntity))
-                    _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskEntity>(_editTaskEntity));
+                _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskEntity>(_editTaskEntity));
                 NotifyOfPropertyChange(() => IsCompleted);
             }
         }
@@ -105,7 +102,11 @@ namespace ToDoManager.View.ViewModels
         public DateTime? CompletedUtc => _editTaskEntity.CompletedUtc;
 
         public bool CanSave => !IsNullOrEmpty(Name) && Name.Length <= 100;
+        
+        public bool CanRemove => _taskModel.Contains(_editTaskEntity);
 
+        public bool CanAddNew => !_taskModel.Contains(_editTaskEntity) && CanSave;
+        
         public void Save()
         {
             if (CanSave && _taskModel.Contains(_editTaskEntity)) _taskModel.Edit(_editTaskEntity);
@@ -121,10 +122,6 @@ namespace ToDoManager.View.ViewModels
             Refresh();
         }
 
-        private void CreateNew() => _editTaskEntity = new TaskEntity();
-
-        public bool CanAddNew => !_taskModel.Contains(_editTaskEntity) && CanSave;
-
         public void AddNew()
         {
             if (CanSave && !_taskModel.Contains(_editTaskEntity))
@@ -134,8 +131,6 @@ namespace ToDoManager.View.ViewModels
             if (_editTaskEntity.Group != null)
                 _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskGroupEntity>(_editTaskEntity.Group));
         }
-
-        public bool CanRemove => _taskModel.Contains(_editTaskEntity);
 
         public void Remove()
         {
@@ -147,6 +142,8 @@ namespace ToDoManager.View.ViewModels
             CreateNew();
             Refresh();
         }
+        
+        private void CreateNew() => _editTaskEntity = new TaskEntity();
 
         public void Handle(EditEntityEvent<TaskEntity> message)
         {

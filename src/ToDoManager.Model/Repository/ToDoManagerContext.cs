@@ -21,7 +21,7 @@ namespace ToDoManager.Model.Repository
         {   
             modelBuilder.Entity<TaskEntity>().HasKey(entity => entity.Id);
             modelBuilder.Entity<TaskEntity>().Property(p => p.Id)
-                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             modelBuilder.Entity<TaskEntity>().Property(entity => entity.Note).HasMaxLength(5000);
             modelBuilder.Entity<TaskEntity>().Property(entity => entity.Name).HasMaxLength(100);
             modelBuilder.Entity<TaskEntity>().Ignore(entity => entity.IsCompleted);
@@ -30,7 +30,7 @@ namespace ToDoManager.Model.Repository
             modelBuilder.Entity<TaskGroupEntity>().HasKey(entity => entity.Id);
             modelBuilder.Entity<TaskGroupEntity>().Ignore(entity => entity.IsCompleted);
             modelBuilder.Entity<TaskGroupEntity>().Property(p => p.Id)
-                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             modelBuilder.Entity<TaskGroupEntity>().Ignore(entity => entity.IsCompleted);
             modelBuilder.Entity<TaskGroupEntity>()
                 .HasMany(entity => entity.Tasks)

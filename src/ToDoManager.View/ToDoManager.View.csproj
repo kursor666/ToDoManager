@@ -85,6 +85,7 @@
     <Compile Include="EventHandlers\SelectedGroupEvent.cs" />
     <Compile Include="Utils\AutoSaveInterval.cs" />
     <Compile Include="Utils\EntityToVmConverter.cs" />
+    <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\EditGroupViewModel.cs" />
     <Compile Include="ViewModels\EditTaskViewModel.cs" />
     <Compile Include="ViewModels\ListGroupViewModel.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="ViewModels\MenuViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\TaskGroupListViewModel.cs" />
+    <Compile Include="Views\AboutView.xaml.cs" />
     <Compile Include="Views\EditGroupView.xaml.cs" />
     <Compile Include="Views\EditTaskView.xaml.cs" />
     <Compile Include="Views\ListGroupView.xaml.cs" />
@@ -137,6 +139,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\AboutView.xaml" />
     <Page Include="Views\EditGroupView.xaml" />
     <Page Include="Views\EditTaskView.xaml" />
     <Page Include="Views\ListGroupView.xaml" />

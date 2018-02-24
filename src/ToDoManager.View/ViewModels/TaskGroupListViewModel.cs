@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using Caliburn.Micro;
 using ToDoManager.Model.Entities;
@@ -30,6 +29,17 @@ namespace ToDoManager.View.ViewModels
         private Action _taskAction;
         private Action _groupAction;
         private SolidColorBrush _backgroundColor;
+        
+        public TaskGroupListViewModel(ITaskModel taskModel, ITaskGroupModel groupModel,
+            IEventAggregator eventAggregator, EntityToVmConverter vmConverter)
+        {
+            _taskModel = taskModel;
+            _groupModel = groupModel;
+            _eventAggregator = eventAggregator;
+            _vmConverter = vmConverter;
+            eventAggregator.Subscribe(this);
+            All();
+        }
 
         public SolidColorBrush BackgroundColor
         {
@@ -86,17 +96,6 @@ namespace ToDoManager.View.ViewModels
                     _eventAggregator.PublishOnUIThread(new EditEntityEvent<TaskEntity>(value.TaskEntity));
                 NotifyOfPropertyChange(() => SelectedTask);
             }
-        }
-
-        public TaskGroupListViewModel(ITaskModel taskModel, ITaskGroupModel groupModel,
-            IEventAggregator eventAggregator, EntityToVmConverter vmConverter)
-        {
-            _taskModel = taskModel;
-            _groupModel = groupModel;
-            _eventAggregator = eventAggregator;
-            _vmConverter = vmConverter;
-            eventAggregator.Subscribe(this);
-            All();
         }
 
         public void UncompletedOnly()

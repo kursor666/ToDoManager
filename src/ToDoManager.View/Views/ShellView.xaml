@@ -11,7 +11,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ContentControl x:Name="MenuVm" Grid.Row="0"/>
+        <ContentControl x:Name="MenuVm" Grid.Row="0" />
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -22,13 +22,13 @@
             </Border>
             <StackPanel Orientation="Vertical" Grid.Column="1">
                 <Border BorderBrush="DarkGray" CornerRadius="3" BorderThickness="2" Margin="3">
-                    <ContentControl x:Name="EditTaskVm" Margin="2"/>
+                    <ContentControl x:Name="EditTaskVm" Margin="2" />
                 </Border>
                 <Border BorderBrush="DarkGray" CornerRadius="3" BorderThickness="2" Margin="3">
-                    <ContentControl x:Name="EditGroupVm" Margin="2"/>
+                    <ContentControl x:Name="EditGroupVm" Margin="2" />
                 </Border>
                 <Border BorderBrush="DarkGray" CornerRadius="3" BorderThickness="2" Margin="3">
-                    <ContentControl x:Name="ManageVm" Margin="2"/>
+                    <ContentControl x:Name="ManageVm" Margin="2" />
                 </Border>
             </StackPanel>
         </Grid>

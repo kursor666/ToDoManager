@@ -16,19 +16,15 @@ namespace ToDoManager.View.ViewModels
     {
         private readonly SettingsModel _settingsModel;
         private readonly IEventAggregator _eventAggregator;
+        private readonly IWindowManager _windowManager;
 
-        public MenuViewModel(SettingsModel settingsModel, IEventAggregator eventAggregator)
+        public MenuViewModel(SettingsModel settingsModel, IEventAggregator eventAggregator,
+            IWindowManager windowManager)
         {
             _settingsModel = settingsModel;
             _eventAggregator = eventAggregator;
+            _windowManager = windowManager;
         }
-
-        public void NewTask() => _eventAggregator.PublishOnUIThread(new EditEntityEvent<TaskEntity>(null));
-
-        public void NewGroup() =>
-            _eventAggregator.PublishOnUIThread(new EditEntityEvent<TaskGroupEntity>(null));
-
-        public void Exit() => Environment.Exit(0);
 
         public bool DisableAutoSave
         {
@@ -74,6 +70,13 @@ namespace ToDoManager.View.ViewModels
             }
         }
 
+        public void NewTask() => _eventAggregator.PublishOnUIThread(new EditEntityEvent<TaskEntity>(null));
+
+        public void NewGroup() =>
+            _eventAggregator.PublishOnUIThread(new EditEntityEvent<TaskGroupEntity>(null));
+
+        public void Exit() => Environment.Exit(0);
+
         public void SetWhite() => SetColor(Color.FromRgb(255, 255, 255));
 
         public void SetLightGreen() => SetColor(Color.FromRgb(124, 249, 127));
@@ -81,6 +84,11 @@ namespace ToDoManager.View.ViewModels
         public void SetLightOrange() => SetColor(Color.FromRgb(255, 205, 130));
 
         public void SetLightBlue() => SetColor(Color.FromRgb(178, 207, 255));
+
+        public void AboutWindowShow()
+        {
+            _windowManager.ShowWindow(new AboutViewModel());
+        }
 
         private void SetColor(Color color)
         {

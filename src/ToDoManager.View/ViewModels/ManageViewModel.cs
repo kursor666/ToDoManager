@@ -27,13 +27,11 @@ namespace ToDoManager.View.ViewModels
             _eventAggregator.Subscribe(this);
         }
 
-        private void TimerTick(object sender, EventArgs e) => Save();
+        public bool CanCancel => _settingsModel.AutoSaveTimer == 0;
 
         public bool CanSave => _settingsModel.AutoSaveTimer == 0;
 
         public void Save() => _eventAggregator.PublishOnUIThread(new SaveEvent());
-
-        public bool CanCancel => _settingsModel.AutoSaveTimer == 0;
 
         public void Cancel()
         {
@@ -42,6 +40,8 @@ namespace ToDoManager.View.ViewModels
         }
 
         private void Reload() => _eventAggregator.PublishOnUIThread(new ReloadEvent());
+
+        private void TimerTick(object sender, EventArgs e) => Save();
 
         public void Handle(AutoSaveInterval message)
         {

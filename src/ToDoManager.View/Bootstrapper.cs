@@ -17,15 +17,9 @@ namespace ToDoManager.View
     {
         private IKernel _kernel;
 
-        public Bootstrapper()
-        {
-            Initialize();
-        }
+        public Bootstrapper() => Initialize();
 
-        protected override void OnStartup(object sender, StartupEventArgs e)
-        {
-            DisplayRootViewFor<ShellViewModel>();
-        }
+        protected override void OnStartup(object sender, StartupEventArgs e) => DisplayRootViewFor<ShellViewModel>();
 
         protected override void Configure()
         {
