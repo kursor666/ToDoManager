@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ToDoManager.Model.Entities;
@@ -52,7 +53,27 @@ namespace ToDoManager.Model.Repository
             return entity != null && _dbProvider.Entry(entity).State == EntityState.Deleted ? null : entity;
         }
 
-        public void SaveChanges() => _dbProvider.SaveChanges();
+        public void SaveChanges()
+        {
+            bool success;
+            do
+            {
+                success = true;
+                try
+                {
+                    _dbProvider.SaveChanges();
+                }
+                catch (DbUpdateConcurrencyException e)
+                {
+                    foreach (var dbEntityEntry in e.Entries)
+                    {
+                        dbEntityEntry.Reload();
+                    }
+
+                    success = false;
+                }
+            } while (!success);
+        }
 
         public void DiscardChanges(TEntityBase entity) => _dbProvider.Entry(entity).Reload();
 
@@ -69,8 +90,11 @@ namespace ToDoManager.Model.Repository
                 entry.Reload();
             });
             entries.Where(entry => entry.State == EntityState.Added).ToList()
-                .ForEach(entry => entry.State = EntityState.Deleted);
-            _dbProvider.SaveChanges();
+                .ForEach(entry =>
+                {
+                    entry.State = EntityState.Deleted;
+                });
+            SaveChanges();
         }
     }
 }

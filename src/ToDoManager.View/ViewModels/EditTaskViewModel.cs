@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Eventing.Reader;
 using Caliburn.Micro;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
@@ -102,11 +103,11 @@ namespace ToDoManager.View.ViewModels
         public DateTime? CompletedUtc => _editTaskEntity.CompletedUtc;
 
         public bool CanSave => !IsNullOrEmpty(Name) && Name.Length <= 100;
-        
+
         public bool CanRemove => _taskModel.Contains(_editTaskEntity);
 
         public bool CanAddNew => !_taskModel.Contains(_editTaskEntity) && CanSave;
-        
+
         public void Save()
         {
             if (CanSave && _taskModel.Contains(_editTaskEntity)) _taskModel.Edit(_editTaskEntity);
@@ -116,9 +117,10 @@ namespace ToDoManager.View.ViewModels
         public void Cancel()
         {
             _taskModel.DiscardAllChanges();
-            _editTaskEntity = _taskModel.Contains(_editTaskEntity)
-                ? _taskModel.GetById(_editTaskEntity.Id)
-                : new TaskEntity();
+            if (_taskModel.Contains(_editTaskEntity))
+                _editTaskEntity = _taskModel.GetById(_editTaskEntity.Id);
+            else
+                CreateNew();
             Refresh();
         }
 
@@ -142,7 +144,7 @@ namespace ToDoManager.View.ViewModels
             CreateNew();
             Refresh();
         }
-        
+
         private void CreateNew() => _editTaskEntity = new TaskEntity();
 
         public void Handle(EditEntityEvent<TaskEntity> message)

@@ -84,14 +84,11 @@ namespace ToDoManager.View.ViewModels
 
         public void Cancel()
         {
+            _groupModel.DiscardAllChanges();
             if (_groupModel.Contains(_editGroupEntity))
-            {
-                _groupModel.DiscardAllChanges();
                 _editGroupEntity = _groupModel.GetById(_editGroupEntity.Id);
-            }
             else
                 CreateNew();
-
             Refresh();
         }
 
@@ -139,7 +136,6 @@ namespace ToDoManager.View.ViewModels
         public void Handle(ReloadEntityEvent<TaskGroupEntity> message)
         {
             if (message.Entity == null || message.Entity.Id != _editGroupEntity.Id) return;
-            _editGroupEntity = _groupModel.GetById(message.Entity.Id);
             Refresh();
         }
 
