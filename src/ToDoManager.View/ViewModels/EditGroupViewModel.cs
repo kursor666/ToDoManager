@@ -135,7 +135,9 @@ namespace ToDoManager.View.ViewModels
 
         public void Handle(ReloadEntityEvent<TaskGroupEntity> message)
         {
-            if (message.Entity == null || message.Entity.Id != _editGroupEntity.Id) return;
+            if (message.Entity == null || message.Entity.Id != _editGroupEntity.Id ||
+                message.Entity.Id == default(Guid)) return;
+            _editGroupEntity = _groupModel.GetById(message.Entity.Id);
             Refresh();
         }
 

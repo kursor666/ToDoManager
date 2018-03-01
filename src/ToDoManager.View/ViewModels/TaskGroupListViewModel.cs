@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media;
 using Caliburn.Micro;
 using ToDoManager.Model.Entities;
@@ -16,12 +17,13 @@ namespace ToDoManager.View.ViewModels
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class TaskGroupListViewModel : PropertyChangedBase, IHandle<SelectedGroupEvent>,
         IHandle<SelectedBackgroungColorEvent>, IHandle<ReloadListEvent<TaskEntity>>,
-        IHandle<ReloadListEvent<TaskGroupEntity>>, IHandle<ReloadEvent>
+        IHandle<ReloadListEvent<TaskGroupEntity>>, IHandle<ReloadEvent>, IHandle<LoadStartEvent>, IHandle<LoadEndEvent>
     {
         private readonly ITaskModel _taskModel;
         private readonly ITaskGroupModel _groupModel;
         private readonly IEventAggregator _eventAggregator;
         private readonly EntityToVmConverter _vmConverter;
+        private readonly List<IBaseModel> _models;
         private ListGroupViewModel _selectedGroup;
         private ListTaskViewModel _selectedTask;
         private List<ListGroupViewModel> _groups;
@@ -29,16 +31,41 @@ namespace ToDoManager.View.ViewModels
         private Action _taskAction;
         private Action _groupAction;
         private SolidColorBrush _backgroundColor;
-        
+
+        private string _loadMessage;
+        private bool _isBusy;
+
+
         public TaskGroupListViewModel(ITaskModel taskModel, ITaskGroupModel groupModel,
-            IEventAggregator eventAggregator, EntityToVmConverter vmConverter)
+            IEventAggregator eventAggregator, EntityToVmConverter vmConverter, List<IBaseModel> models)
         {
             _taskModel = taskModel;
             _groupModel = groupModel;
             _eventAggregator = eventAggregator;
             _vmConverter = vmConverter;
+            _models = models;
             eventAggregator.Subscribe(this);
-            All();
+        }
+
+
+        public string LoadMessage
+        {
+            get => _loadMessage;
+            set
+            {
+                _loadMessage = value;
+                NotifyOfPropertyChange(() => LoadMessage);
+            }
+        }
+
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set
+            {
+                _isBusy = value;
+                NotifyOfPropertyChange(() => IsBusy);
+            }
         }
 
         public SolidColorBrush BackgroundColor
@@ -71,7 +98,7 @@ namespace ToDoManager.View.ViewModels
                 NotifyOfPropertyChange(() => Tasks);
             }
         }
-        
+
         public ListGroupViewModel SelectedGroup
         {
             get => _selectedGroup;
@@ -121,6 +148,22 @@ namespace ToDoManager.View.ViewModels
             _taskAction = () => Tasks = _vmConverter.ToListViewModel(_taskModel.GetAll()).ToList();
             _groupAction = () => Groups = _vmConverter.ToListViewModel(_groupModel.GetAll()).ToList();
             Handle(new ReloadEvent());
+        }
+
+        public async void Handle(LoadStartEvent message)
+        {
+            IsBusy = true;
+            LoadMessage = "Идет загрузка данных";
+            await Task.Run(() => _models.ForEach(model => model.Load(() => { }))).ContinueWith(action =>
+                _eventAggregator.PublishOnBackgroundThread(new LoadEndEvent(All)));
+        }
+
+        public void Handle(LoadEndEvent message)
+        {
+            LoadMessage = "Загрузка завершена, обновление.";
+            foreach (var messageCompletedAction in message.CompletedActions)
+                messageCompletedAction();
+            IsBusy = false;
         }
 
         public void Handle(SelectedGroupEvent message)

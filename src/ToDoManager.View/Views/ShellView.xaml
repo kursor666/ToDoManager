@@ -3,34 +3,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:busyIndicator="clr-namespace:Wpf.BusyIndicatorEasy;assembly=Wpf.BusyIndicatorEasy"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="650" MinWidth="550" MinHeight="300"
              Background="{Binding BackgroundColor}">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <ContentControl x:Name="MenuVm" Grid.Row="0" />
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Border BorderBrush="DarkGray" CornerRadius="3" BorderThickness="2" Margin="3" Grid.Column="0">
-                <ContentControl x:Name="TaskGroupVm" />
-            </Border>
-            <StackPanel Orientation="Vertical" Grid.Column="1">
-                <Border BorderBrush="DarkGray" CornerRadius="3" BorderThickness="2" Margin="3">
-                    <ContentControl x:Name="EditTaskVm" Margin="2" />
+    <busyIndicator:BusyIndicator x:Name="BusyIndicator" IsIndeterminate="true" IsBusy="{Binding TaskGroupVm.IsBusy}"
+                                 BusyContent="{Binding TaskGroupVm.LoadMessage}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <ContentControl x:Name="MenuVm" Grid.Row="0" />
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border BorderBrush="DarkGray" CornerRadius="3" BorderThickness="2" Margin="3" Grid.Column="0">
+                    <ContentControl x:Name="TaskGroupVm" />
                 </Border>
-                <Border BorderBrush="DarkGray" CornerRadius="3" BorderThickness="2" Margin="3">
-                    <ContentControl x:Name="EditGroupVm" Margin="2" />
-                </Border>
-                <Border BorderBrush="DarkGray" CornerRadius="3" BorderThickness="2" Margin="3">
-                    <ContentControl x:Name="ManageVm" Margin="2" />
-                </Border>
-            </StackPanel>
+                <StackPanel Orientation="Vertical" Grid.Column="1">
+                    <Border BorderBrush="DarkGray" CornerRadius="3" BorderThickness="2" Margin="3">
+                        <ContentControl x:Name="EditTaskVm" Margin="2" />
+                    </Border>
+                    <Border BorderBrush="DarkGray" CornerRadius="3" BorderThickness="2" Margin="3">
+                        <ContentControl x:Name="EditGroupVm" Margin="2" />
+                    </Border>
+                    <Border BorderBrush="DarkGray" CornerRadius="3" BorderThickness="2" Margin="3">
+                        <ContentControl x:Name="ManageVm" Margin="2" />
+                    </Border>
+                </StackPanel>
+            </Grid>
         </Grid>
-    </Grid>
+    </busyIndicator:BusyIndicator>
 </UserControl>

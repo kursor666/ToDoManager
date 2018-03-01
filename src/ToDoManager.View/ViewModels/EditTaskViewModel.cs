@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Eventing.Reader;
 using Caliburn.Micro;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
@@ -94,6 +93,8 @@ namespace ToDoManager.View.ViewModels
                 if (value == _editTaskEntity.IsCompleted) return;
                 _taskModel.SetCompleted(_editTaskEntity, value);
                 _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskEntity>(_editTaskEntity));
+                if (_editTaskEntity.Group != null)
+                    _eventAggregator.PublishOnUIThread(new ReloadEntityEvent<TaskGroupEntity>(_editTaskEntity.Group));
                 NotifyOfPropertyChange(() => IsCompleted);
             }
         }
@@ -160,7 +161,9 @@ namespace ToDoManager.View.ViewModels
 
         public void Handle(ReloadEntityEvent<TaskEntity> message)
         {
-            if (message.Entity == null || message.Entity.Id != _editTaskEntity.Id) return;
+            if (message.Entity == null || message.Entity.Id != _editTaskEntity.Id ||
+                message.Entity.Id == default(Guid)) return;
+            _editTaskEntity = _taskModel.GetById(message.Entity.Id);
             Refresh();
         }
 

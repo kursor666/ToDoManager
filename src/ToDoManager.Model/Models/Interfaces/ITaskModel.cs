@@ -5,7 +5,7 @@ using ToDoManager.Model.Entities;
 
 namespace ToDoManager.Model.Models.Interfaces
 {
-    public interface ITaskModel : IBaseModelInterface<TaskEntity>
+    public interface ITaskModel : IBaseModel<TaskEntity>
     {
         
     }

@@ -16,7 +16,7 @@ namespace ToDoManager.View.ViewModels
         private readonly SettingsModel _settingsModel;
         private readonly IEventAggregator _eventAggregator;
         private SolidColorBrush _backgroundColor;
-
+        
         public TaskGroupListViewModel TaskGroupVm { get; set; }
         public EditTaskViewModel EditTaskVm { get; set; }
         public EditGroupViewModel EditGroupVm { get; set; }
@@ -52,5 +52,7 @@ namespace ToDoManager.View.ViewModels
         {
             BackgroundColor = message.Color;
         }
+
+        
     }
 }

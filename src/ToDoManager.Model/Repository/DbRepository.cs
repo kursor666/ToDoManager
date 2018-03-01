@@ -19,17 +19,21 @@ namespace ToDoManager.Model.Repository
         {
             _dbProvider = context;
             _dbSet = _dbProvider.Set<TEntityBase>();
-            _dbSet.Load();
         }
 
         public int Count => _dbSet.Count();
+
+        public void Load()
+        {
+            if (_dbSet.Local != null)
+                _dbSet.Load();
+        }
 
         public void Add(TEntityBase entity)
         {
             if (entity.Id != default(Guid)) return;
             entity.Id = Guid.NewGuid();
             _dbSet.Add(entity);
-            _dbProvider.Entry(entity).State = EntityState.Added;
         }
 
         public void Delete(TEntityBase entity)
@@ -66,10 +70,7 @@ namespace ToDoManager.Model.Repository
                 catch (DbUpdateConcurrencyException e)
                 {
                     foreach (var dbEntityEntry in e.Entries)
-                    {
                         dbEntityEntry.Reload();
-                    }
-
                     success = false;
                 }
             } while (!success);
@@ -90,10 +91,7 @@ namespace ToDoManager.Model.Repository
                 entry.Reload();
             });
             entries.Where(entry => entry.State == EntityState.Added).ToList()
-                .ForEach(entry =>
-                {
-                    entry.State = EntityState.Deleted;
-                });
+                .ForEach(entry => entry.State = EntityState.Deleted);
             SaveChanges();
         }
     }

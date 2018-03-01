@@ -9,8 +9,9 @@ namespace ToDoManager.Model.Repository
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class ToDoManagerContext : DbContext
     {
-        public ToDoManagerContext() : base("TasksDb")
+        public ToDoManagerContext() : base(AppConfig.TasksDbConnectionString)
         {
+            
         }
 
         public DbSet<TaskEntity> Tasks { get; set; }

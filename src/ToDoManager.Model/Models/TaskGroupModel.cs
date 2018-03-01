@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
 using ToDoManager.Model.Repository.Interfaces;
@@ -38,7 +39,16 @@ namespace ToDoManager.Model.Models
 
         public void DiscardAllChanges() => _groupRepository.DiscardAllChanges();
 
-        public void DiscardChanges(TaskGroupEntity entity) => _groupRepository.DiscardChanges(entity);
+        public void DiscardChanges(TaskGroupEntity entity)
+        {
+            _groupRepository.DiscardChanges(entity);
+        }
+
+        public void Load(Action completedAction)
+        {
+            _groupRepository.Load();
+            completedAction();
+        }
 
         public void SetCompleted(TaskGroupEntity groupEntity, bool isCompleted)
         {
@@ -68,6 +78,7 @@ namespace ToDoManager.Model.Models
                 if (group != null)
                     return group.Tasks ?? Enumerable.Empty<TaskEntity>();
             }
+
             return Enumerable.Empty<TaskEntity>();
         }
 

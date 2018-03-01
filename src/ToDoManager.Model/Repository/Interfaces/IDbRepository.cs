@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using ToDoManager.Model.Entities;
 
 namespace ToDoManager.Model.Repository.Interfaces
@@ -9,6 +10,7 @@ namespace ToDoManager.Model.Repository.Interfaces
     {
         int Count { get; }
 
+        void Load();
         void Add(TEntityBase entity);
         void Delete(TEntityBase entity);
         void Edit(TEntityBase entity);

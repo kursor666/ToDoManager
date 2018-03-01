@@ -45,6 +45,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466">
+      <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7">
       <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
     </Reference>
@@ -65,6 +68,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Wpf.BusyIndicatorEasy, Version=2.6.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Wpf.BusyIndicatorEasy.1.0.1\lib\net40\Wpf.BusyIndicatorEasy.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -77,6 +83,8 @@
     </Compile>
     <Compile Include="EventHandlers\CancelEvent.cs" />
     <Compile Include="EventHandlers\EditEntityEvent.cs" />
+    <Compile Include="EventHandlers\LoadEndEvent.cs" />
+    <Compile Include="EventHandlers\LoadStartEvent.cs" />
     <Compile Include="EventHandlers\ReloadEntityEvent.cs" />
     <Compile Include="EventHandlers\ReloadEvent.cs" />
     <Compile Include="EventHandlers\ReloadListEvent.cs" />

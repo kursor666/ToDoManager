@@ -43,6 +43,7 @@
     <Reference Include="System" />
     <Reference Include="System.Collections" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -52,12 +53,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppConfig.cs" />
     <Compile Include="Entities\BaseEntity.cs" />
     <Compile Include="Entities\SettingsEntity.cs" />
     <Compile Include="Entities\TaskEntity.cs" />
     <Compile Include="Entities\TaskGroupEntity.cs" />
     <Compile Include="Models\SettingsModel.cs" />
-    <Compile Include="Models\Interfaces\IBaseModelInterface.cs" />
+    <Compile Include="Models\Interfaces\IBaseModel.cs" />
     <Compile Include="Models\Interfaces\ITaskGroupModel.cs" />
     <Compile Include="Models\Interfaces\ITaskModel.cs" />
     <Compile Include="Models\TaskGroupModel.cs" />

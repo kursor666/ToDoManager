@@ -5,7 +5,7 @@ using ToDoManager.Model.Entities;
 
 namespace ToDoManager.Model.Models.Interfaces
 {
-    public interface ITaskGroupModel : IBaseModelInterface<TaskGroupEntity>
+    public interface ITaskGroupModel : IBaseModel<TaskGroupEntity>
     {
         IEnumerable<TaskEntity> GetTasksFromGroup(TaskGroupEntity groupEntity);
     }

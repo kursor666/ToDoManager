@@ -4,12 +4,17 @@ using ToDoManager.Model.Entities;
 
 namespace ToDoManager.Model.Models.Interfaces
 {
-    public interface IBaseModelInterface<TEntity> where TEntity: BaseEntity
+    public interface IBaseModel
+    {
+        void SaveChanges();
+        void DiscardAllChanges();
+        void Load(Action completedAction);
+    }
+
+    public interface IBaseModel<TEntity> : IBaseModel where TEntity : BaseEntity
     {
         void JoinTaskInGroup(TaskEntity taskEntity, TaskGroupEntity groupEntity);
         void ExecuteTaskFromGroup(TaskEntity taskEntity);
-        void SaveChanges();
-        void DiscardAllChanges();
         bool Contains(TEntity entity);
         void Add(TEntity entity);
         IEnumerable<TEntity> GetAll();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
 using ToDoManager.Model.Repository.Interfaces;
@@ -70,6 +71,13 @@ namespace ToDoManager.Model.Models
         }
 
         public void DiscardChanges(TaskEntity entity) => _taskRepository.DiscardChanges(entity);
+
+        public void Load(Action completedAction)
+        {
+            _taskRepository.Load();
+            completedAction();
+        }
+
 
         public void JoinTaskInGroup(TaskEntity taskEntity, TaskGroupEntity groupEntity)
         {
