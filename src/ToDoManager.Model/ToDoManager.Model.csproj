@@ -58,6 +58,7 @@
     <Compile Include="Entities\SettingsEntity.cs" />
     <Compile Include="Entities\TaskEntity.cs" />
     <Compile Include="Entities\TaskGroupEntity.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\SettingsModel.cs" />
     <Compile Include="Models\Interfaces\IBaseModel.cs" />
     <Compile Include="Models\Interfaces\ITaskGroupModel.cs" />
@@ -65,9 +66,11 @@
     <Compile Include="Models\TaskGroupModel.cs" />
     <Compile Include="Models\TaskModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\ContextFactory.cs" />
     <Compile Include="Repository\DbRepository.cs" />
     <Compile Include="Repository\Interfaces\IDbRepository.cs" />
     <Compile Include="Repository\Interfaces\ISettingsRepository.cs" />
+    <Compile Include="Repository\ProjectInitializer.cs" />
     <Compile Include="Repository\SettingsRepository.cs" />
     <Compile Include="Repository\ToDoManagerContext.cs" />
   </ItemGroup>

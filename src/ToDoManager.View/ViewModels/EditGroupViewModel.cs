@@ -77,8 +77,8 @@ namespace ToDoManager.View.ViewModels
 
         public void Save()
         {
-            if (CanSave && _groupModel.Contains(_editGroupEntity)) _groupModel.Edit(_editGroupEntity);
-
+            if (CanSave && _groupModel.Contains(_editGroupEntity))
+                _groupModel.Edit(_editGroupEntity);
             _groupModel.SaveChanges();
         }
 

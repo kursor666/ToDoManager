@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
 using ToDoManager.Model.Repository.Interfaces;
@@ -59,10 +58,7 @@ namespace ToDoManager.Model.Models
             Edit(taskEntity);
         }
 
-        public void Edit(TaskEntity entity)
-        {
-            _taskRepository.Edit(entity);
-        }
+        public void Edit(TaskEntity entity) => _taskRepository.Edit(entity);
 
         public void Remove(TaskEntity entity)
         {
@@ -91,9 +87,6 @@ namespace ToDoManager.Model.Models
 
         public void DiscardAllChanges() => _taskRepository.DiscardAllChanges();
 
-        public void ExecuteTaskFromGroup(TaskEntity taskEntity)
-        {
-            _groupModel.ExecuteTaskFromGroup(taskEntity);
-        }
+        public void ExecuteTaskFromGroup(TaskEntity taskEntity) => _groupModel.ExecuteTaskFromGroup(taskEntity);
     }
 }

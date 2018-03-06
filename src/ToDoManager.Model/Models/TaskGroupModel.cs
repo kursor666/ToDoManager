@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
 using ToDoManager.Model.Entities;
 using ToDoManager.Model.Models.Interfaces;
 using ToDoManager.Model.Repository.Interfaces;
@@ -16,22 +15,13 @@ namespace ToDoManager.Model.Models
     {
         private readonly IDbRepository<TaskGroupEntity> _groupRepository;
 
-        public TaskGroupModel(IDbRepository<TaskGroupEntity> groupRepository)
-        {
-            _groupRepository = groupRepository;
-        }
+        public TaskGroupModel(IDbRepository<TaskGroupEntity> groupRepository) => _groupRepository = groupRepository;
 
         public bool Contains(TaskGroupEntity entity) => _groupRepository.Contains(entity);
 
-        public void Add(TaskGroupEntity groupEntity)
-        {
-            _groupRepository.Add(groupEntity);
-        }
+        public void Add(TaskGroupEntity groupEntity) => _groupRepository.Add(groupEntity);
 
-        public void Remove(TaskGroupEntity groupEntity)
-        {
-            _groupRepository.Delete(groupEntity);
-        }
+        public void Remove(TaskGroupEntity groupEntity) => _groupRepository.Delete(groupEntity);
 
         public void Edit(TaskGroupEntity groupEntity) => _groupRepository.Edit(groupEntity);
 
@@ -39,10 +29,7 @@ namespace ToDoManager.Model.Models
 
         public void DiscardAllChanges() => _groupRepository.DiscardAllChanges();
 
-        public void DiscardChanges(TaskGroupEntity entity)
-        {
-            _groupRepository.DiscardChanges(entity);
-        }
+        public void DiscardChanges(TaskGroupEntity entity) => _groupRepository.DiscardChanges(entity);
 
         public void Load(Action completedAction)
         {
@@ -90,11 +77,8 @@ namespace ToDoManager.Model.Models
                 return entity;
             });
 
-        public IEnumerable<TaskGroupEntity> GetBy(Func<TaskGroupEntity, bool> predicate)
-        {
-            var result = _groupRepository.GetAll().Where(predicate);
-            return result;
-        }
+        public IEnumerable<TaskGroupEntity> GetBy(Func<TaskGroupEntity, bool> predicate) =>
+            _groupRepository.GetAll().Where(predicate);
 
         public void JoinTaskInGroup(TaskEntity taskEntity, TaskGroupEntity groupEntity)
         {

@@ -5,13 +5,12 @@ using ToDoManager.Model.Entities;
 
 namespace ToDoManager.Model.Repository
 {
-    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class ToDoManagerContext : DbContext
     {
         public ToDoManagerContext() : base(AppConfig.TasksDbConnectionString)
         {
-            
+            Database.SetInitializer(new ProjectInitializer());
         }
 
         public DbSet<TaskEntity> Tasks { get; set; }

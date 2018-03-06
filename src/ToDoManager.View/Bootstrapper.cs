@@ -35,8 +35,9 @@ namespace ToDoManager.View
             _kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
             _kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
             _kernel.Bind<ToDoManagerContext>().ToSelf().InSingletonScope();
-            _kernel.Bind<IDbRepository<TaskEntity>>().To<DbRepository<TaskEntity>>();
-            _kernel.Bind<IDbRepository<TaskGroupEntity>>().To<DbRepository<TaskGroupEntity>>();
+            _kernel.Bind<ContextFactory>().ToSelf().InSingletonScope();
+            _kernel.Bind<IDbRepository<TaskEntity>>().To<DbRepository<TaskEntity>>().InSingletonScope();
+            _kernel.Bind<IDbRepository<TaskGroupEntity>>().To<DbRepository<TaskGroupEntity>>().InSingletonScope();
             _kernel.Bind<ISettingsRepository>().To<SettingsRepository>().InSingletonScope();
             _kernel.Bind<ITaskModel, IBaseModel>().To<TaskModel>();
             _kernel.Bind<ITaskGroupModel, IBaseModel>().To<TaskGroupModel>();
